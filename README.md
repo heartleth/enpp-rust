@@ -1,0 +1,2 @@
+# enpp-rust
+rust edition
