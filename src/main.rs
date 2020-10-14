@@ -1,5 +1,5 @@
-mod util;
-mod tree;
+pub mod transpile;
+use transpile::*;
 
 pub fn main() {
     let k = "
@@ -12,5 +12,6 @@ e
         g
     h
     ";
-    tree::CodeTree::treeify(&String::from(k));
+    let v = tree::CodeTree::treeify(&String::from(k));
+    transpile(&v);
 }

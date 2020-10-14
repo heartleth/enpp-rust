@@ -11,3 +11,8 @@ pub fn split(s:&String)->Vec<String> {
 pub fn regi(s:&String, reg:&str)->bool {
     regex::Regex::new(reg).unwrap().is_match(&s.to_lowercase())
 }
+
+pub fn keyword(s:&String)->String {
+    let k = split(s);
+    String::from(&k[0])
+}
