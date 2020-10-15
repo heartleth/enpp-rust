@@ -1,15 +1,67 @@
-pub mod tree;
-pub mod util;
+pub mod blocks;
 
-pub fn transpile(tree :&Vec<tree::CodeTree>)->String {
+pub use blocks::parser::*;
+pub use blocks::tree;
+pub use blocks::Mem;
+
+pub fn transpile(tree :&Mem, pivot :usize)->String {
     let mut ret = String::new();
-    for elem in tree {
+    let mut iter = 0;
+    let len = tree[pivot].children.len();
+    loop {
+        let parent = tree[pivot].children[iter];
+        let elem = &tree[parent];
         let code = &elem.code;
-        let splited_code = util::split(code);
-        let keyword = util::keyword(code);
+        let keyword = keyword(code);
         
-        
+        ret.push_str(&loop {
+            if regi(&keyword, "(unless|if|else|while|for|repeat)") {
+                break blocks::parse_if(&tree, &mut iter, pivot);
+            }
+            else if regi(&keyword, "(make|ha(ve|s)|let)") {
+                
+            }
+            else if regi(&keyword, "when") {
+            
+            }
+            else if regi(&keyword, "(include|lib(rary)?|using|import)") {
+                break blocks::parse_import(&tree, iter);
+            }
+            else if regi(&keyword, "return") {
+            
+            }
+            else if regi(&keyword, "name(space)?") {
+            
+            }
+            else if regi(&keyword, "break|continue") {
+            
+            }
+            else if regi(&keyword, "public|private|protected") {
+            
+            }
+            else if regi(&keyword, "set") {
+            
+            }
+            else if regi(&keyword, "class") {
+            
+            }
+            else if regi(&keyword, "use") {
+            
+            }
+            else if regi(&keyword, "about") {
+            
+            }
+            else if first_phrase(&code) == split(&code).len() - 1 {
 
+            }
+            else {
+
+            }
+        });
+        iter += 1;
+        if iter == len {
+            break;
+        }
     }
     String::new()
 }

@@ -13,5 +13,5 @@ e
     h
     ";
     let v = tree::CodeTree::treeify(&String::from(k));
-    transpile(&v);
+    transpile(&v, 0);
 }

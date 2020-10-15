@@ -1,4 +1,5 @@
 use regex;
+
 pub fn split(s:&String)->Vec<String> {
     let re = regex::Regex::new(r"[\s\t\r\n]+").unwrap();
     let mut ret = Vec::new();
@@ -15,4 +16,8 @@ pub fn regi(s:&String, reg:&str)->bool {
 pub fn keyword(s:&String)->String {
     let k = split(s);
     String::from(&k[0])
+}
+
+pub fn to_str(s:&String)->&str {
+    &s[..]
 }
