@@ -2,7 +2,16 @@ use regex;
 
 pub fn split(s:&String)->Vec<String> {
     let re = regex::Regex::new(r"[\s\t\r\n]+").unwrap();
-    let mut ret = Vec::new();
+    let mut ret :Vec<String> = Vec::new();
+    for part in re.split(&s) {
+        ret.push(String::from(part));
+    }
+    ret
+}
+
+pub fn split_token(s:&String, delim:&str)->Vec<String> {
+    let re = regex::Regex::new(delim).unwrap();
+    let mut ret :Vec<String> = Vec::new();
     for part in re.split(&s) {
         ret.push(String::from(part));
     }
@@ -18,6 +27,4 @@ pub fn keyword(s:&String)->String {
     String::from(&k[0])
 }
 
-pub fn to_str(s:&String)->&str {
-    &s[..]
-}
+pub fn to_str(s:&String)->&str { &s[..] }

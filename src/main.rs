@@ -2,16 +2,5 @@ pub mod transpile;
 use transpile::*;
 
 pub fn main() {
-    let k = "
-a
-b
-    c
-        d
-e
-    f
-        g
-    h
-    ";
-    let v = tree::CodeTree::treeify(&String::from(k));
-    transpile(&v, 0);
+    println!("{}", verb_parse(&String::from("vector-in-std-of-i4-type")));
 }

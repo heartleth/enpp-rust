@@ -12,7 +12,8 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
         let parent = tree[pivot].children[iter];
         let elem = &tree[parent];
         let code = &elem.code;
-        let keyword = keyword(code);
+        let code_splited = split(&code);
+        let keyword = keyword(&code);
         
         ret.push_str(&loop {
             if regi(&keyword, "(unless|if|else|while|for|repeat)") {
@@ -51,8 +52,8 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
             else if regi(&keyword, "about") {
             
             }
-            else if first_phrase(&code) == split(&code).len() - 1 {
-
+            else if first_phrase(&code_splited) == split(&code).len() - 1 {
+                
             }
             else {
 

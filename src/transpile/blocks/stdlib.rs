@@ -1,4 +1,4 @@
-pub static stdlib :&str = 
+pub static STDLIB :&str = 
 "#ifndef _ENPPSTD_
 #define _ENPPSTD_
 #include <algorithm>
