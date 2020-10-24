@@ -3,7 +3,7 @@ pub mod stdlib;
 pub mod tree;
 
 use crate::transpile::transpile;
-use stdlib::*;
+// use stdlib::*;
 use tree::*;
 pub use parser::*;
 
@@ -21,7 +21,7 @@ pub fn parse_if(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
     let split = &split(&to_parse.code);
 
     ret = String::from("if");
-    ret += &value_parse(&split);
+    ret += &value_parse(&to_parse.code);
     transpile(&tree, elem);
     ret += "}";
     

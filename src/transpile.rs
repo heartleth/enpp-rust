@@ -1,8 +1,6 @@
 pub mod blocks;
 
-pub use blocks::parser::*;
-pub use blocks::tree;
-pub use blocks::Mem;
+pub use blocks::*;
 
 pub fn transpile(tree :&Mem, pivot :usize)->String {
     let mut ret = String::new();
@@ -23,7 +21,7 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
                 
             }
             else if regi(&keyword, "when") {
-            
+                
             }
             else if regi(&keyword, "(include|lib(rary)?|using|import)") {
                 break blocks::parse_import(&tree, iter);

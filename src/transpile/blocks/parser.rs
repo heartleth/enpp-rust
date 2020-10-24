@@ -1,13 +1,24 @@
 mod types;
 mod util;
 pub use util::*;
+pub use types::*;
 
-pub fn value_parse(s :&Vec<String>)->String {
+pub fn value_parse(_s :&String)->String {
     String::new()
 }
 
 pub fn first_phrase(s :&Vec<String>)->usize {
-    s.len()-1
+    let mut ret = 0;
+    let len = s.len();
+    if len == 1 {
+        return 0;
+    }
+    else {
+        if is_bracket(&s.join(" ")) {
+            return len - 1;
+        }
+    }
+    ret
 }
 
 pub fn first_clause(s :&Vec<String>)->usize {

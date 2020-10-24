@@ -27,4 +27,26 @@ pub fn keyword(s:&String)->String {
     String::from(&k[0])
 }
 
-pub fn to_str(s:&String)->&str { &s[..] }
+pub fn is_bracket(s :&String)->bool {
+    println!("{}", s);
+    let mut in_string = false;
+    let mut escaped = false;
+    let mut stack :Vec<()> = Vec::new();
+    
+    for elem in s.chars() {
+        match elem {
+            '\\' => { escaped = in_string && !escaped },
+            '"' => { if !escaped { in_string = !in_string; } escaped=false; },
+            '(' => if !in_string { stack.push(()) },
+            ')' => if !in_string {
+                if stack.is_empty() { panic!("괄호쌍 안맞는다 이기야..."); }
+                else { stack.pop(); }
+            },
+            _ => ()
+        }
+    }
+    let len = s.as_bytes().len() - 1;
+    (stack.is_empty())
+     && (s.as_bytes()[0] == '(' as u8)
+     && (s.as_bytes()[len] == ')' as u8)
+}
