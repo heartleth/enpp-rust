@@ -36,3 +36,23 @@ pub fn declarition_parse(s :&Vec<String>)->Variable {
     if last == 0 { ret.typename=String::from("auto "); }
     ret
 }
+
+pub fn arguments_parse(s :&Vec<String>)->Vec<Variable> {
+    let mut ret :Vec<Variable> = Vec::new();
+    let mut begin = 0;
+    let mut end = 0;
+
+    for elem in s {
+        if elem == "," {
+            ret.push(declarition_parse(&s[begin..end].to_vec()));
+            begin = end + 1;
+        }
+        end += 1;
+    }
+
+    if s.len() > 0 {
+        ret.push(declarition_parse(&s[begin..].to_vec()));
+    }
+
+    ret
+}

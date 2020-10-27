@@ -1,5 +1,6 @@
 pub mod transpile;
-use transpile::*;
+pub use transpile::*;
+pub use parser::*;
 
 //                      /\                 ____
 //                   /    |               /   |
@@ -11,7 +12,7 @@ use transpile::*;
 //       /       //    \ \/ \  /     \    |              |
 //       |       |//  \ /`\_     _/   /  /               |
 //       |         `--_=\/ \    __-_,, _| \             /
-//       \           / |\\`/|  `   \ /    |          /
+//       \           / |\\`/|  `   \ /    |           /
 //         \         | \\ ``:_.    _-```  /        _/
 //           -_       -__---___--``     -<_____--``
 //              `-------=`__-|  |-_____
@@ -30,5 +31,7 @@ use transpile::*;
 //                 `````-----------````
 
 pub fn main() {
-    println!("{}", parser::first_phrase(&parser::split(&String::from("( i love you )"))));
+    println!("처리중...");
+    let v = &String::from("a is ( 1 and b ) is 2");
+    println!("처리끝ㅇㅇ : {}", parser::value_parse(&v, 0));
 }

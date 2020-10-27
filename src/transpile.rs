@@ -50,7 +50,7 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
             else if regi(&keyword, "about") {
             
             }
-            else if first_phrase(&code_splited) == split(&code).len() - 1 {
+            else if first_phrase(&code_splited, true) == split(&code).len() - 1 {
                 
             }
             else {
