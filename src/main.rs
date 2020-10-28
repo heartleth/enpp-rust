@@ -32,6 +32,6 @@ pub use parser::*;
 
 pub fn main() {
     println!("처리중...");
-    let v = &String::from("a is ( 1 and b ) is 2");
+    let v = &String::from("stoi: input + stoi: input");
     println!("처리끝ㅇㅇ : {}", parser::value_parse(&v, 0));
 }

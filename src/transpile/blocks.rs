@@ -8,7 +8,7 @@ pub use parser::*;
 
 pub type Mem = Vec<CodeTree>;
 
-pub fn parse_else(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
+pub fn parse_else(_tree :&Mem, _nth :&mut usize, _parent_idx :usize)->String {
     String::new()
 }
 
@@ -17,7 +17,6 @@ pub fn parse_if(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
     let parent = &tree[parent_idx];
     let elem = parent.children[*nth];
     let to_parse = &tree[elem];
-    let split = &split(&to_parse.code);
 
     ret = String::from("if");
     ret += &value_parse(&to_parse.code, 0);
@@ -35,7 +34,7 @@ pub fn parse_if(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
 }
 
 
-pub fn parse_import(s :&Mem, pivot :usize)->String {
+pub fn parse_import(_s :&Mem, _pivot :usize)->String {
     
     String::new()
 }

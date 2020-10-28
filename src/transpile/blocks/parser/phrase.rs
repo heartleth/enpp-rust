@@ -29,7 +29,7 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool)->usize {
                 }
             }
         }
-        else if first_low == "if" {
+        else if first_low == "^if$" {
             let mut expression = first_phrase(&s[1..].to_vec(), true);
             expression += 1;
             expression += first_phrase(&s[expression+2..].to_vec(), true);
@@ -38,25 +38,29 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool)->usize {
             ret += first_phrase(&s[expression+2..].to_vec(), true);
             ret += 2;
         }
-        else if regi(&s[1], "in|been|having") {
+        else if regi(&s[1], "^(in|been|having)$") {
             ret = 2;
             ret += first_phrase(&s[..s.len()-3].to_vec(), false);
         }
-        else if first_low == "result" {
+        else if first_low == "^(result)$" {
             ret = 2;
             ret += first_clause(&s[2..].to_vec());
         }
-        else if regi(&first_low, r"\$|[tw]hat") {
+        else if regi(&first_low, r"^(\$|[tw]hat)$") {
             ret = 1;
             ret += first_clause(&s[1..].to_vec());
         }
-        else if first_low == "make" {
+        else if first_low == "^(make)$" {
             let to_give = [vec![String::from("a")], s[..].to_vec()].concat();
             ret = first_clause(&to_give);
         }
-        else if regi(&first_low, "value|addr(ess)?|ptr|pointer") {
+        else if regi(&first_low, "^(value|addr(ess)?|ptr|pointer)$") {
             ret = 2;
             ret += first_phrase(&s[2..].to_vec(), false);
+        }
+        else if regi(&first_low, r"^[a-zA-Z_]\w*:$") {
+            ret = 1;
+            ret += first_phrase(&s[1..].to_vec(), false);
         }
         else if first_low.chars().last().unwrap() == ':' {
             ret = 1;
