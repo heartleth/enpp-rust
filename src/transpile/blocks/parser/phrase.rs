@@ -38,10 +38,6 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool)->usize {
             ret += first_phrase(&s[expression+2..].to_vec(), true);
             ret += 2;
         }
-        else if regi(&s[1], "^(in|been|having)$") {
-            ret = 2;
-            ret += first_phrase(&s[..s.len()-3].to_vec(), false);
-        }
         else if first_low == "^(result)$" {
             ret = 2;
             ret += first_clause(&s[2..].to_vec());
@@ -75,7 +71,7 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool)->usize {
             let mut breaker = 0;
             let mut is_breaked = false;
             for elem in &ignores {
-                if regi(&elem, OPERATORS) {
+                if regi(&elem, r"^(,|and|or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|[|&]|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|been|do|in)$") {
                     is_breaked = true;
                     break;
                 }

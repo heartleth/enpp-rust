@@ -1,5 +1,7 @@
 use super::*;
 
+pub static OPERATORS :&str = r"^(,|and|or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|[|&]|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!])$";
+
 pub fn left_operator<T>(
     do_pass :&mut bool,
     (units, list, reg) :(&Vec<String>, &Vec<String>, &str),

@@ -1,6 +1,8 @@
-pub mod transpile;
-pub use transpile::*;
-pub use parser::*;
+// #[macro_use]
+// extern crate text_io;
+
+mod transpile;
+use transpile::*;
 
 //                      /\                 ____
 //                   /    |               /   |
@@ -31,7 +33,8 @@ pub use parser::*;
 //                 `````-----------````
 
 pub fn main() {
-    println!("처리중...");
-    let v = &String::from("stoi: input + stoi: input");
-    println!("처리끝ㅇㅇ : {}", parser::value_parse(&v, 0));
+    let k = String::from("
+a having b do c + 1
+    ");
+    println!("{}", transpile(&tree::CodeTree::treeify(&k), 0));
 }

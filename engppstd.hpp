@@ -1,4 +1,4 @@
-pub static STDLIB :[u8;3060] = *b"
+
 #ifndef _ENPPSTD_
 #define _ENPPSTD_
 #include <algorithm>
@@ -23,13 +23,13 @@ typedef const char ci1;typedef const unsigned char cu1;typedef const short ci2;t
 typedef const unsigned short cu2;typedef const unsigned long cu4;typedef const unsigned long long cu8;
 typedef const float cf4;typedef const double cf8;typedef const long double cld;
 using std::vector;using std::string;using std::stoi;
-template<class F, class...T>void get_time(F f, T...a) { auto st = std::chrono::system_clock::now(); f(a...); std::chrono::duration<double>t = std::chrono::system_clock::now() - st; std::cout << t.count() << \" second(s) spent.\" << std::endl; }
+template<class F, class...T>void get_time(F f, T...a) { auto st = std::chrono::system_clock::now(); f(a...); std::chrono::duration<double>t = std::chrono::system_clock::now() - st; std::cout << t.count() << " second(s) spent." << std::endl; }
 template<class...T>void println(T...arg) { (std::cout << ... << arg); std::cout << std::endl; }
 template<class...T>void print(T...arg) { (std::cout << ... << arg); }
-std::string input_line(std::string a = \"\") { std::string b; std::cout << a; getline(std::cin, b); return b; }
-std::string input(std::string a = \"\") { std::string b; std::cout << a; std::cin >> b; return b; }
-std::string static_input(int etag, std::string a = \"\") { static std::map<int, std::string>memoi; if (memoi.count(etag)) { return memoi[etag]; } std::string b; std::cout << a; std::cin >> b; memoi.insert(std::make_pair(etag, b)); return b; }
-std::string static_input_line(int etag, std::string a = \"\") { static std::map<int, std::string>memoi; if (memoi.count(etag)) { return memoi[etag]; } std::string b; std::cout << a; getline(std::cin, b); memoi.insert(std::make_pair(etag, b)); return b; }
+std::string input_line(std::string a = "") { std::string b; std::cout << a; getline(std::cin, b); return b; }
+std::string input(std::string a = "") { std::string b; std::cout << a; std::cin >> b; return b; }
+std::string static_input(int etag, std::string a = "") { static std::map<int, std::string>memoi; if (memoi.count(etag)) { return memoi[etag]; } std::string b; std::cout << a; std::cin >> b; memoi.insert(std::make_pair(etag, b)); return b; }
+std::string static_input_line(int etag, std::string a = "") { static std::map<int, std::string>memoi; if (memoi.count(etag)) { return memoi[etag]; } std::string b; std::cout << a; getline(std::cin, b); memoi.insert(std::make_pair(etag, b)); return b; }
 template<class...T>auto tup(T...arg)->std::tuple<T...> { return std::tuple<T...>(arg...); }
 template<class T>class __folder {
 public:T c; template<class E>__folder& operator<< (E a) { c.push_back(a); return*this; }};
@@ -46,4 +46,3 @@ using namespace srv;
 using namespace sr;
 #endif
 #endif
-";

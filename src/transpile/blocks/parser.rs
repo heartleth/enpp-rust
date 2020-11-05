@@ -9,8 +9,6 @@ pub use value::*;
 pub use types::*;
 pub use util::*;
 
-static OPERATORS :&str = r"^(and|or|plus|minus|=|[ia]s|[+\-*/%]|<<|>>|[|&]|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!])$";
-
 pub fn verb_parse(s :&String)->String {
     #[derive(PartialEq)]
     enum Mode {

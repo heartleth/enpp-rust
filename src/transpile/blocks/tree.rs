@@ -48,8 +48,8 @@ pub mod filter {
                 return 1;
             }
             else {
-                for elem in s.as_bytes() {
-                    let c = *elem as char;
+                for elem in s.chars() {
+                    let c = elem;
                     if c != INDEDT_TYPE {
                         break;
                     }
@@ -59,6 +59,50 @@ pub mod filter {
             }
         }
         return ret;
+    }
+
+    pub fn filter(s :&str)->String {
+        let mut ret = String::new();
+        let mut in_string = false;
+        let mut escaped = false;
+
+        for elem in s.chars() {
+            match elem {
+                '(' | ')' | '+' | '*' | '/' | ',' | '|' => {
+                    if !in_string {
+                        ret.push(' ');
+                        ret.push(elem);
+                        ret.push(' ');
+                    }
+                    else {
+                        ret.push(elem);
+                    }
+                },
+                ':' => {
+                    if !in_string {
+                        ret.push(elem);
+                        ret.push(' ');
+                    }
+                    else {
+                        ret.push(elem);
+                    }
+                },
+                '"' => {
+                    if !escaped {
+                        in_string = !in_string;
+                    }
+                    escaped=false;
+                    ret.push('"');
+                },
+                '\\' => { escaped = in_string && !escaped; ret.push('\\'); },
+                ';' => {if in_string{ret.push(';')}else {return ret}},
+                _ => {
+                    ret.push(elem);
+                    escaped = false;
+                }
+            };
+        }
+        ret
     }
 }
 
@@ -89,7 +133,7 @@ impl CodeTree {
                 }
                
                 let top = stack.len() - 1;
-                mem.push(CodeTree::new(elem.trim(), line));
+                mem.push(CodeTree::new(&filter::filter(elem.trim())[..], line));
                 let back_memory = mem.len() - 1;
 
                 mem[stack[top]].children.push(back_memory);
@@ -97,12 +141,5 @@ impl CodeTree {
             }
         }
         mem
-    }
-}
-
-pub fn info(data: &Vec<CodeTree>, pivot:usize, indents:usize) {
-    println!("{}{}", "  ".repeat(indents), data[pivot].code);
-    for elem in &data[pivot].children {
-        info(data, *elem, indents + 1);
     }
 }

@@ -42,13 +42,12 @@ pub fn is_bracket(s :&String)->bool {
                 if stack.is_empty() { panic!("괄호쌍 안맞는다 이기야..."); }
                 else { stack.pop(); }
             },
-            _ => ()
+            _ => { escaped=false; }
         }
     }
-    let len = s.as_bytes().len();
     (stack.is_empty())
-     && (s.as_bytes()[0] == '(' as u8)
-     && (s.as_bytes()[len - 1] == ')' as u8)
+     && (s.trim().chars().next().unwrap() == '(')
+     && (s.trim().chars().last().unwrap() == ')')
 }
 
 pub fn is_string(s :&String)->bool {
@@ -59,7 +58,8 @@ pub fn is_string(s :&String)->bool {
         match elem {
             '\\' => { escaped = in_string && !escaped },
             '"' => { if !escaped { in_string = !in_string; } escaped=false; },
-            _ => { if !in_string { return false; } }
+            ' ' | '\n' | '\r' | '\t' => escaped = false,
+            _ => { escaped = false; if !in_string { return false; } }
         }
     }
     true
