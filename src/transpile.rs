@@ -1,5 +1,4 @@
 pub mod blocks;
-
 pub use blocks::*;
 
 pub fn transpile(tree :&Mem, pivot :usize)->String {
@@ -20,7 +19,7 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
                 blocks::parse_if(&tree, &mut iter, pivot)
             }
             else if regi(&keyword, "^(make|ha(ve|s)|let)$") {
-                String::new()
+                blocks::parse_new(code)
             }
             else if regi(&keyword, "^when$") {
                 String::new()

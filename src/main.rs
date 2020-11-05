@@ -34,7 +34,7 @@ use transpile::*;
 
 pub fn main() {
     let k = String::from("
-a having b do c + 1
+Let a : 10, 20
     ");
     println!("{}", transpile(&tree::CodeTree::treeify(&k), 0));
 }

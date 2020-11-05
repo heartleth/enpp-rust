@@ -10,3 +10,6 @@ pub type Mem = Vec<CodeTree>;
 
 pub mod block_if;
 pub use block_if::*;
+
+pub mod block_new;
+pub use block_new::*;
