@@ -14,9 +14,19 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
         let code = &elem.code;
         let code_splited = split(&code);
         let keyword = keyword(&code);
+        
         ret = format!("{}{}", ret, &{
-            if regi(&keyword, "^(unless|if|else|while|for|repeat)$") {
+            if regi(&keyword, "^(unless|if|else)$") {
                 blocks::parse_if(&tree, &mut iter, pivot)
+            }
+            else if regi(&keyword, "^(repeat)$") {
+                blocks::parse_repeat(&tree, parent)
+            }
+            else if regi(&keyword, "^(while)$") {
+                blocks::parse_while(&tree, parent)
+            }
+            else if regi(&keyword, "^(for)$") {
+                blocks::parse_for(&tree, parent)
             }
             else if regi(&keyword, "^(make|ha(ve|s)|let)$") {
                 blocks::parse_new(code)

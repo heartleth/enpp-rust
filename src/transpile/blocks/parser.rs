@@ -1,8 +1,8 @@
-mod phrase;
-mod types;
-mod value;
-mod util;
-mod clause;
+pub mod phrase;
+pub mod types;
+pub mod value;
+pub mod util;
+pub mod clause;
 
 pub use phrase::*;
 pub use value::*;

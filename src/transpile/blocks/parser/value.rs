@@ -53,7 +53,7 @@ pub fn value_parse(s :&String, level :usize)->String {
 
     if level == 0 {
         left_operator(&mut do_pass, (units, list, "^(,)$"), &mut |cnt :usize| {
-            ret = format!("{}, {}", &value_parse(&list[..cnt].to_vec().join(" "), level), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+            ret = format!("{}, {}", &value_parse(&list[..cnt].to_vec().join(" "), 0), &value_parse(&list[cnt+1..].to_vec().join(" "), 0));
         });
     }
     else if level == 1 {
@@ -84,9 +84,9 @@ pub fn value_parse(s :&String, level :usize)->String {
             let first = 1 + first_phrase(&list[1..].to_vec(), true);
             let second = first + 2 + first_phrase(&list[first+2..].to_vec(), true);
             ret = format!("(({}) ? ({}) : ({}))",
-                &value_parse(&list[1..first+1].to_vec().join(" "), level),
-                &value_parse(&list[first+2..second+1].to_vec().join(" "), level),
-                &value_parse(&list[second+2..].to_vec().join(" "), level)
+                &value_parse(&list[1..first+1].to_vec().join(" "), 1),
+                &value_parse(&list[first+2..second+1].to_vec().join(" "), 1),
+                &value_parse(&list[second+2..].to_vec().join(" "), 1)
             );
         }
     }
@@ -104,12 +104,12 @@ pub fn value_parse(s :&String, level :usize)->String {
 
                 do_pass = false;
                 if regi(&elem, r"^(as|=)$") {
-                    ret = format!("({} = {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+                    ret = format!("({} = {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
                 }
                 else {
                     ret = format!("({to_assign} = {functor}({to_assign}, {argument}))", 
-                        to_assign = &value_parse(&list[..cnt].to_vec().join(" "), level - 1),
-                        argument = &value_parse(&list[cnt+1..].to_vec().join(" "), level),
+                        to_assign = &value_parse(&list[..cnt].to_vec().join(" "), 1),
+                        argument = &value_parse(&list[cnt+1..].to_vec().join(" "), 1),
                         functor = &elem[..elem.len()-1]
                     );
                 }
@@ -118,37 +118,37 @@ pub fn value_parse(s :&String, level :usize)->String {
     }
     else if level == 4 {
         left_operator(&mut do_pass, (units, list, "^or$"), &mut |cnt :usize| {
-            ret = format!("({} || {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+            ret = format!("({} || {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
         });
     }
     else if level == 5 {
         left_operator(&mut do_pass, (units, list, "^and$"), &mut |cnt :usize| {
-            ret = format!("({} && {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+            ret = format!("({} && {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
         });
     }
     else if level == 6 {
         left_operator(&mut do_pass, (units, list, "^(is(not)?|[<>]=?)$"), &mut |cnt :usize| {
             if regi(&list[cnt], r"is") {
-                ret = format!("({} == {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+                ret = format!("({} == {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
             }
             else if regi(&list[cnt], r"not") {
-                ret = format!("({} != {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+                ret = format!("({} != {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
             }
             else {
-                ret = format!("({} {operator} {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level), operator = &units[cnt]);
+                ret = format!("({} {operator} {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1), operator = &units[cnt]);
             }
         });
     }
     else if level == 7 {
         left_operator(&mut do_pass, (units, list, "^([+-]|plus|minus)$"), &mut |cnt :usize| {
             if regi(&units[cnt], "^plus$") {
-                ret = format!("({} + {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+                ret = format!("({} + {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
             }
             else if regi(&units[cnt], "^minus$") {
-                ret = format!("({} + {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level));
+                ret = format!("({} + {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
             }
             else {
-                ret = format!("({} {operator} {})", &value_parse(&list[..cnt].to_vec().join(" "), level - 1), &value_parse(&list[cnt+1..].to_vec().join(" "), level), operator = &units[cnt]);
+                ret = format!("({} {operator} {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1), operator = &units[cnt]);
             }
         });
     }
@@ -160,14 +160,14 @@ pub fn value_parse(s :&String, level :usize)->String {
     else if level == 9 {
         if regi(&units[0], r"^[a-zA-Z_]\w*:$") {
             do_pass = false;
-            ret = format!("{}({})", &verb_parse(&String::from(&units[0][..&units[0].len()-1])), &value_parse(&list[1..].to_vec().join(" "), level));
+            ret = format!("{}({})", &verb_parse(&String::from(&units[0][..&units[0].len()-1])), &value_parse(&list[1..].to_vec().join(" "), 0));
         }
         else {
             left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_]\w*!$"), &mut |cnt :usize| {
                 ret = format!("{}({}, {})", 
                     &verb_parse(&String::from(&units[cnt][..&units[cnt].len()-1])),
-                    &value_parse(&list[..cnt].to_vec().join(" "), level - 1),
-                    &value_parse(&list[cnt+1..].to_vec().join(" "), level)
+                    &value_parse(&list[..cnt].to_vec().join(" "), 1),
+                    &value_parse(&list[cnt+1..].to_vec().join(" "), 1)
                 );
             });
         }
@@ -175,23 +175,23 @@ pub fn value_parse(s :&String, level :usize)->String {
     else if level == 10 {
         if regi(&units[units.len()-2], r"^(been)$") {
             do_pass = false;
-            ret = format!("{}({})", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), level));
+            ret = format!("{}({})", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1));
         }
         else if regi(&units[units.len()-2], r"^do$") {
             do_pass = false;
-            ret = format!("{1}.{0}()", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), level));
+            ret = format!("{1}.{0}()", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1));
         }
     }
     else if level == 11 {
         if regi(&units[units.len()-2], r"^(in)$") {
             do_pass = false;
-            ret = format!("{}::{}", &units[units.len()-1], &value_parse(&list[0..units.len()-2].to_vec().join(" "), level));
+            ret = format!("{}::{}", &units[units.len()-1], &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1));
         }
     }
     else if level == 12 {
         if regi(&units[units.len()-2], r"^(having)$") {
             do_pass = false;
-            ret = format!("{}.{}", &value_parse(&list[0..units.len()-2].to_vec().join(" "), level), &units[units.len()-1]);
+            ret = format!("{}.{}", &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1), &units[units.len()-1]);
         }
     }
     else if level >= 13 {

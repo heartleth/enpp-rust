@@ -1,6 +1,3 @@
-// #[macro_use]
-// extern crate text_io;
-
 mod transpile;
 use transpile::*;
 
@@ -34,7 +31,8 @@ use transpile::*;
 
 pub fn main() {
     let k = String::from("
-Let a : 10, 20
+for a, b of [1..10]
+    Let a : 2+2*2
     ");
     println!("{}", transpile(&tree::CodeTree::treeify(&k), 0));
 }

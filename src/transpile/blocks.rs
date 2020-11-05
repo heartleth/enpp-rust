@@ -13,3 +13,6 @@ pub use block_if::*;
 
 pub mod block_new;
 pub use block_new::*;
+
+pub mod block_repeat;
+pub use block_repeat::*;
