@@ -16,3 +16,6 @@ pub use block_new::*;
 
 pub mod block_repeat;
 pub use block_repeat::*;
+
+pub mod block_when;
+pub use block_when::*;

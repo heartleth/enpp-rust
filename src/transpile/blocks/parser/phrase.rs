@@ -10,7 +10,7 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool)->usize {
     }
     else {
         let first_low = s[0].to_ascii_lowercase();
-        if is_bracket(&s.join(" ")) {
+        if is_bracket(&s.join(" "), ('(', ')')) || is_bracket(&s.join(" "), ('{', '}')) {
             if first_phrase(&s[1..len - 1].to_vec(), true) == len - 3 {
                 return len - 1;
             }

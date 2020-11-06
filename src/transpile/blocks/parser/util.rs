@@ -28,26 +28,33 @@ pub fn keyword(s:&String)->String {
     String::from(&k[0])
 }
 
-pub fn is_bracket(s :&String)->bool {
+pub fn is_bracket(s :&String, (start, end) :(char, char))->bool {
     let mut in_string = false;
     let mut escaped = false;
-    let mut stack :Vec<()> = Vec::new();
+    let mut stack :Vec<char> = Vec::new();
     
     for elem in s.chars() {
         match elem {
             '\\' => { escaped = in_string && !escaped },
             '"' => { if !escaped { in_string = !in_string; } escaped=false; },
-            '(' => if !in_string { stack.push(()) },
+            '(' => if !in_string { stack.push('(') },
             ')' => if !in_string {
                 if stack.is_empty() { panic!("괄호쌍 안맞는다 이기야..."); }
-                else { stack.pop(); }
+                else if *stack.last().unwrap() == '(' { stack.pop(); }
+                else { panic!("괄호쌍 안맞는다 이기야..."); }
+            },
+            '{' => if !in_string { stack.push('{') },
+            '}' => if !in_string {
+                if stack.is_empty() { panic!("괄호쌍 안맞는다 이기야..."); }
+                else if *stack.last().unwrap() == '{' { stack.pop(); }
+                else { panic!("괄호쌍 안맞는다 이기야..."); }
             },
             _ => { escaped=false; }
-        }
+        };
     }
     (stack.is_empty())
-     && (s.trim().chars().next().unwrap() == '(')
-     && (s.trim().chars().last().unwrap() == ')')
+     && (s.trim().chars().next().unwrap() == start)
+     && (s.trim().chars().last().unwrap() == end)
 }
 
 pub fn is_string(s :&String)->bool {

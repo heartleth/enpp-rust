@@ -68,7 +68,7 @@ pub mod filter {
 
         for elem in s.chars() {
             match elem {
-                '(' | ')' | '+' | '*' | '/' | ',' | '|' => {
+                '(' | ')' | '+' | '*' | '/' | ',' | '|' | '{' | '}' => {
                     if !in_string {
                         ret.push(' ');
                         ret.push(elem);

@@ -18,7 +18,7 @@ pub fn verb_parse(s :&String)->String {
     let mut parsing_mode:Mode = Mode::_None;
     let splited = split_token(s, "-");
     let name = &splited[0];
-    let mut collected :Vec<&String> = Vec::new();
+    let mut collected :Vec<String> = Vec::new();
     let mut ret = String::from(name);
 
     for elem in &splited[1..] {
@@ -36,7 +36,7 @@ pub fn verb_parse(s :&String)->String {
                 parsing_mode = Mode::_None
             }
             else {
-                collected.push(elem);
+                collected.push(String::from(elem));
             }
         }
         else if parsing_mode == Mode::In {

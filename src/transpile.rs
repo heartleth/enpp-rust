@@ -32,7 +32,7 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
                 blocks::parse_new(code)
             }
             else if regi(&keyword, "^when$") {
-                String::new()
+                blocks::parse_when(&tree, parent)
             }
             else if regi(&keyword, "^(include|lib(rary)?|using|import)$") {
                 blocks::parse_import(&tree, parent)
@@ -62,7 +62,7 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
                 String::new()
             }
             else if first_phrase(&code_splited, true) == split(&code).len() - 1 {
-                value_parse(&code, 1)
+                value_parse(&code, 1) + ";"
             }
             else {
                 String::new()

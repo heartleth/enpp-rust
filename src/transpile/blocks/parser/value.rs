@@ -47,8 +47,12 @@ pub fn value_parse(s :&String, level :usize)->String {
         }
         return String::from(s);
     }
-    if is_bracket(&s) {
-        return format!("({})", &value_parse(&String::from(&s[1..s.len()-1]), 0));
+    
+    if is_bracket(&s, ('(', ')')) {
+        return format!("({})", &value_parse(&String::from(&s[1..s.len()-1]), 1));
+    }
+    else if is_bracket(&s, ('{', '}')) {
+        return format!("{{{}}}", &value_parse(&String::from(&s[1..s.len()-1]), 0));
     }
 
     if level == 0 {

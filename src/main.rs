@@ -31,8 +31,8 @@ use transpile::*;
 
 pub fn main() {
     let k = String::from("
-for a, b of [1..10]
-    Let a : 2+2*2
+When it printasdf return i4 is dynamic
+    println: 10
     ");
     println!("{}", transpile(&tree::CodeTree::treeify(&k), 0));
 }

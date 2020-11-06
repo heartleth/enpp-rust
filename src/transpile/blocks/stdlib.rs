@@ -47,3 +47,5 @@ using namespace sr;
 #endif
 #endif
 ";
+
+// pub static mut is_dynamic :bool = false;

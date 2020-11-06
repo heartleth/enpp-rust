@@ -24,8 +24,6 @@ pub fn parse_while(tree :&Mem, pivot :usize)->String {
     )
 }
 
-use super::parser::types::*;
-
 pub fn parse_for(tree :&Mem, pivot :usize)->String {
     let splited = &split(&tree[pivot].code);
     let mut where_of = 0;
@@ -34,7 +32,7 @@ pub fn parse_for(tree :&Mem, pivot :usize)->String {
         if elem.to_ascii_lowercase() == "of" { break; }
         else { where_of += 1; }
     }
-    let mut to_assign = String::new();
+    let mut to_assign;
     let dec = arguments_parse(&splited[1..where_of].to_vec());
 
     if dec.len() == 1 {
