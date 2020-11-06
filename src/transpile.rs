@@ -1,5 +1,17 @@
 pub mod blocks;
-pub use blocks::*;
+pub use blocks::{
+    parse_sentence,
+    Mem,
+    keyword,
+    split,
+    regi,
+    value_parse,
+    first_phrase,
+    first_clause,
+    tree
+};
+
+use std::panic;
 
 pub fn transpile(tree :&Mem, pivot :usize)->String {
     let mut ret = String::new();
@@ -38,34 +50,37 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
                 blocks::parse_import(&tree, parent)
             }
             else if regi(&keyword, "^return$") {
-                String::new()
+                blocks::parse_return(&code)
             }
-            else if regi(&keyword, "^name(space)?$") {
-                String::new()
+            else if regi(&code, r"^name\s?space\s.+$") {
+                blocks::parse_namespace(&tree, parent)
             }
             else if regi(&keyword, "^break|continue$") {
-                String::new()
+                format!("{};", code)
             }
             else if regi(&keyword, "^public|private|protected$") {
-                String::new()
+                blocks::parse_access(&tree, parent)
             }
             else if regi(&keyword, "^set$") {
-                String::new()
+                blocks::parse_set(&code)
             }
             else if regi(&keyword, "^class$") {
-                String::new()
+                blocks::parse_class(&tree, parent)
             }
             else if regi(&keyword, "^use$") {
-                String::new()
+                blocks::parse_use(&tree, parent)
             }
             else if regi(&keyword, "^about$") {
-                String::new()
+                blocks::parse_about(&code)
             }
-            else if first_phrase(&code_splited, true) == split(&code).len() - 1 {
+            else if first_phrase(&code_splited, true, false) == code_splited.len() - 1 {
                 value_parse(&code, 1) + ";"
             }
+            else if first_clause(&code_splited) == code_splited.len() - 1 {
+                parse_sentence(&code) + ";"
+            }
             else {
-                String::new()
+                panic!("Invalid sentence")
             }
         });
         iter += 1;

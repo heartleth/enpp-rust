@@ -29,10 +29,7 @@ use transpile::*;
 //            \\___   |=========`````` __---``
 //                 `````-----------````
 
-pub fn main() {
-    let k = String::from("
-When it printasdf return i4 is dynamic
-    println: 10
-    ");
+fn main() {
+    let k = String::from("");
     println!("{}", transpile(&tree::CodeTree::treeify(&k), 0));
 }

@@ -19,3 +19,12 @@ pub use block_repeat::*;
 
 pub mod block_when;
 pub use block_when::*;
+
+pub mod block_basic;
+pub use block_basic::*;
+
+pub mod block_class;
+pub use block_class::*;
+
+pub mod block_use;
+pub use block_use::*;

@@ -1,6 +1,8 @@
 mod operator;
+mod sentence;
 
 pub use operator::*;
+pub use sentence::*;
 use super::phrase::*;
 use super::types::*;
 use super::util::*;
@@ -83,10 +85,21 @@ pub fn value_parse(s :&String, level :usize)->String {
         }
     }
     else if level == 2 {
+        if regi(&units[0], r"^(make)$") {
+            ret = parse_sentence(&format!("it {}", &s[5..]));
+        }
+        else if regi(&units[0], r"^(result)$") {
+            ret = parse_sentence(&String::from(&s[10..]));
+        }
+        else if regi(&units[0], r"^([wt]hat|\$)$") {
+            ret = parse_sentence(&String::from(&s[5..]));
+        }
+    }
+    else if level == 3 {
         if units[0].to_ascii_lowercase() == "^if$" {
             do_pass = false;
-            let first = 1 + first_phrase(&list[1..].to_vec(), true);
-            let second = first + 2 + first_phrase(&list[first+2..].to_vec(), true);
+            let first = 1 + first_phrase(&list[1..].to_vec(), true, false);
+            let second = first + 2 + first_phrase(&list[first+2..].to_vec(), true, false);
             ret = format!("(({}) ? ({}) : ({}))",
                 &value_parse(&list[1..first+1].to_vec().join(" "), 1),
                 &value_parse(&list[first+2..second+1].to_vec().join(" "), 1),
@@ -94,20 +107,20 @@ pub fn value_parse(s :&String, level :usize)->String {
             );
         }
     }
-    else if level == 3 {
+    else if level == 4 {
         let mut cnt = units.len();
         for _ in 0..units.len() {
             cnt -= 1;
             let elem = &units[cnt];
 
             if regi(&elem, r"^(=|as|[a-zA-Z_]\w*=)$") {
-                let lport = first_phrase(&list[..cnt].to_vec(), true) + 1;
+                let lport = first_phrase(&list[..cnt].to_vec(), true, false) + 1;
                 if lport != cnt {
                     panic!("SyntaxError: phrase left of the operator 'as' is too short.");
                 }
 
                 do_pass = false;
-                if regi(&elem, r"^(as|=)$") {
+                if regi(&elem, r"^(=|as)$") {
                     ret = format!("({} = {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
                 }
                 else {
@@ -120,17 +133,17 @@ pub fn value_parse(s :&String, level :usize)->String {
             }
         }
     }
-    else if level == 4 {
+    else if level == 5 {
         left_operator(&mut do_pass, (units, list, "^or$"), &mut |cnt :usize| {
             ret = format!("({} || {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
         });
     }
-    else if level == 5 {
+    else if level == 6 {
         left_operator(&mut do_pass, (units, list, "^and$"), &mut |cnt :usize| {
             ret = format!("({} && {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
         });
     }
-    else if level == 6 {
+    else if level == 7 {
         left_operator(&mut do_pass, (units, list, "^(is(not)?|[<>]=?)$"), &mut |cnt :usize| {
             if regi(&list[cnt], r"is") {
                 ret = format!("({} == {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
@@ -143,7 +156,7 @@ pub fn value_parse(s :&String, level :usize)->String {
             }
         });
     }
-    else if level == 7 {
+    else if level == 8 {
         left_operator(&mut do_pass, (units, list, "^([+-]|plus|minus)$"), &mut |cnt :usize| {
             if regi(&units[cnt], "^plus$") {
                 ret = format!("({} + {})", &value_parse(&list[..cnt].to_vec().join(" "), 1), &value_parse(&list[cnt+1..].to_vec().join(" "), 1));
@@ -156,12 +169,12 @@ pub fn value_parse(s :&String, level :usize)->String {
             }
         });
     }
-    else if level == 8 {
+    else if level == 9 {
         left_operator(&mut do_pass, (units, list, "^([/*%])$"), &mut |cnt :usize| {
             ret = format!("({} {operator} {})", &value_parse(&list[..cnt].to_vec().join(" "), level), &value_parse(&list[cnt+1..].to_vec().join(" "), level), operator = &units[cnt]);
         });
     }
-    else if level == 9 {
+    else if level == 10 {
         if regi(&units[0], r"^[a-zA-Z_]\w*:$") {
             do_pass = false;
             ret = format!("{}({})", &verb_parse(&String::from(&units[0][..&units[0].len()-1])), &value_parse(&list[1..].to_vec().join(" "), 0));
@@ -176,7 +189,7 @@ pub fn value_parse(s :&String, level :usize)->String {
             });
         }
     }
-    else if level == 10 {
+    else if level == 11 {
         if regi(&units[units.len()-2], r"^(been)$") {
             do_pass = false;
             ret = format!("{}({})", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1));
@@ -186,19 +199,30 @@ pub fn value_parse(s :&String, level :usize)->String {
             ret = format!("{1}.{0}()", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1));
         }
     }
-    else if level == 11 {
+    else if level == 12 {
         if regi(&units[units.len()-2], r"^(in)$") {
             do_pass = false;
             ret = format!("{}::{}", &units[units.len()-1], &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1));
         }
     }
-    else if level == 12 {
+    else if level == 13 {
         if regi(&units[units.len()-2], r"^(having)$") {
             do_pass = false;
             ret = format!("{}.{}", &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1), &units[units.len()-1]);
         }
     }
-    else if level >= 13 {
+    else if level == 14 {
+        if regi(&units[0], r"^(value|addr(ess)?|pointer|ptr)$") {
+            do_pass = false;
+            if regi(&units[0], r"^(value)$") {
+                ret = format!("(*{})", &value_parse(&list[2..units.len()-2].to_vec().join(" "), 1));
+            }
+            else {
+                ret = format!("(&{})", &value_parse(&list[2..units.len()-2].to_vec().join(" "), 1));
+            }
+        }
+    }
+    else if level >= 15 {
         if is_string(&s) {
             return format!("{}", s);
         }
