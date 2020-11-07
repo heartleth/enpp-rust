@@ -1,0 +1,4 @@
+library standard
+
+When it starts
+    it println -> "Hello, world!"

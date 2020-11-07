@@ -106,10 +106,30 @@ pub mod filter {
     }
 }
 
+fn count_brackets(s :&str, brackets :&mut Vec<char>) {
+    let mut in_string = false;
+    let mut escaped = false;
+    for elem in s.chars() {
+        match elem {
+            '(' => { brackets.push('('); },
+            ')' => { if brackets.last().unwrap() == &'(' { brackets.pop(); } },
+            '{' => { brackets.push('{'); },
+            '}' => { if brackets.last().unwrap() == &'{' { brackets.pop(); } },
+            '"' => {
+                if !escaped { in_string = !in_string }
+                escaped=false;
+            },
+            '\\' => { escaped = in_string && !escaped; },
+            _ => escaped=false
+        };
+    }
+}
+
 impl CodeTree {
     pub fn treeify(s :&String)->Vec<CodeTree> {
         let mut mem :Vec<CodeTree> = vec!(CodeTree::new("root", 0));
         let mut stack :Vec<usize> = vec!(0);
+        let mut brackets :Vec<char> = Vec::new();
 
         let mut before_indents:usize = 0;
         let mut line:usize = 0;
@@ -118,26 +138,35 @@ impl CodeTree {
             line += 1;
             let indents = filter::get_indents(&elem);
             if indents >= 0 {
-                let indents = indents as usize;
-                let top = stack.len() - 1;
-                
-                let diff = indents as i32 - before_indents as i32;
-                if diff > 0 {
-                    let last = mem[stack[top]].children.len() - 1;
-                    stack.push(mem[stack[top]].children[last]);
-                }
-                else if diff < 0 {
-                    for _ in indents .. before_indents {
-                        stack.pop();
+                if brackets.is_empty() {
+                    let indents = indents as usize;
+                    let top = stack.len() - 1;
+                    
+                    let diff = indents as i32 - before_indents as i32;
+                    if diff > 0 {
+                        let last = mem[stack[top]].children.len() - 1;
+                        stack.push(mem[stack[top]].children[last]);
                     }
-                }
-               
-                let top = stack.len() - 1;
-                mem.push(CodeTree::new(&filter::filter(elem.trim())[..], line));
-                let back_memory = mem.len() - 1;
+                    else if diff < 0 {
+                        for _ in indents .. before_indents {
+                            stack.pop();
+                        }
+                    }
+                
+                    let top = stack.len() - 1;
+                    let code = &filter::filter(elem.trim())[..];
+                    mem.push(CodeTree::new(code, line));
+                    let back_memory = mem.len() - 1;
 
-                mem[stack[top]].children.push(back_memory);
-                before_indents = indents;
+                    count_brackets(&code, &mut brackets);
+
+                    mem[stack[top]].children.push(back_memory);
+                    before_indents = indents;
+                }
+                else {
+                    mem.last_mut().unwrap().code += &filter::filter(elem.trim())[..];
+                    count_brackets(&elem.trim(), &mut brackets);
+                }
             }
         }
         mem

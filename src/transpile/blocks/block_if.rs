@@ -55,6 +55,7 @@ pub fn parse_import(s :&Mem, pivot :usize)->Result<String, &str> {
     let mut ret = String::new();
     match &method.to_ascii_lowercase()[..] {
         "import" => {
+            crate::runner::filesys::convert_to_cpp(&String::from(&s[pivot].code[7..]), "hpp").expect("Failed to write file");
             ret = format!("#include\"{}\"\n", &s[pivot].code[7..]);
         },
         "using" => {

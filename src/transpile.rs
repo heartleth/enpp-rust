@@ -10,6 +10,7 @@ pub use blocks::{
     first_clause,
     tree
 };
+pub use super::runner::filesys::CURRENT_FILE as CURRENT_FILE;
 
 pub fn transpile(tree :&Mem, pivot :usize)->String {
     let mut ret = String::new();
@@ -85,10 +86,9 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
             ret = format!("{}{}", ret, e);
         }
         else if let Err(e) = parsed {
-            eprintln!("In file {}:
-{:3} | {}
-Error: {}
-            ", "main.epp", elem.line, elem.code, e);
+            unsafe {
+                eprintln!("In file {}:\n{:3} | {}\nError: {}\n", &CURRENT_FILE, elem.line, elem.code, e);
+            }
         }
         iter += 1;
     }
