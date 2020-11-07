@@ -1,6 +1,6 @@
 use super::*;
 
-pub fn parse_class(s :&Mem, pivot :usize)->String {
+pub fn parse_class(s :&Mem, pivot :usize)->Result<String, &'static str> {
     let code_splited :Vec<String> = split(&s[pivot].code);
     let mut ret = String::new();
     let mut is_classname = false;
@@ -29,5 +29,6 @@ pub fn parse_class(s :&Mem, pivot :usize)->String {
             ret = format!("class {} {}{{ {} }};", &elem, inherits, transpile(&s, pivot));
         }
     }
-    ret
+    if ret.len() == 0 { Err("no class name") }
+    else { Ok(ret) }
 }

@@ -1,6 +1,6 @@
 use super::*;
 
-pub fn parse_new(s :&String)->String {
+pub fn parse_new(s :&String)->Result<String, &str> {
     #[derive(Debug)]
     enum InitType {
         Constructor, RefType, CopyType, _None
@@ -44,40 +44,40 @@ pub fn parse_new(s :&String)->String {
         };
     }
 
-    let var = &declarition_parse(&splited[1..where_as].to_vec());
+    let var = &declarition_parse(&splited[1..where_as].to_vec())?;
 
     let ret = match init_type {
         Constructor => match make_type {
-            Have => format!("constexpr {}({});\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 0)),
-            Let => format!("{}({});\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 0)),
+            Have => format!("constexpr {}({});\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 0)?),
+            Let => format!("{}({});\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 0)?),
             Make => format!(
                 "{type}* {name} = new {type}({args});\n",
                 type = var.typename,
                 name = var.name,
-                args = &value_parse(&splited[where_as+1..].to_vec().join(" "), 0)
+                args = &value_parse(&splited[where_as+1..].to_vec().join(" "), 0)?
             )
         },
         CopyType => match make_type {
-            Have => format!("constexpr {} = {};\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)),
-            Let => format!("{} = {};\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)),
+            Have => format!("constexpr {} = {};\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)?),
+            Let => format!("{} = {};\n", var.to_string(), &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)?),
             Make => format!(
                 "{type}* {name} = new {type}({to_copy});\n",
                 type = var.typename,
                 name = var.name,
-                to_copy = &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)
+                to_copy = &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)?
             )
         },
         RefType => match make_type {
-            Have => panic!("우흥~ 하고 울어요. 우흥~ 하고 우는데..."),
-            Let => format!("{}&{} = {};\n", var.typename, var.name, &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)),
+            Have => return Err("우흥~ 하고 울어요. 우흥~ 하고 우는데..."),
+            Let => format!("{}&{} = {};\n", var.typename, var.name, &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)?),
             Make => format!(
                 "{type} {name} = {to_copy};\n",
                 type = var.typename,
                 name = var.name,
-                to_copy = &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)
+                to_copy = &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)?
             )
         },
         _None => var.to_string()
     };
-    ret
+    Ok(ret)
 }

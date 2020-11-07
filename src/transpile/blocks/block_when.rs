@@ -1,20 +1,20 @@
 use super::*;
 pub static mut IS_DYNAMIC :bool = false;
 
-pub fn parse_when(tree :&Mem, pivot :usize)->String {
+pub fn parse_when(tree :&Mem, pivot :usize)->Result<String, &'static str> {
     let code = &tree[pivot].code;
     let splited = split(&code);
 
     if splited[1].to_ascii_lowercase() == "it" && splited[2].to_ascii_lowercase() == "starts" {
-        format!("int main(){{{}}}", transpile(&tree, pivot))
+        Ok(format!("int main(){{{}}}", transpile(&tree, pivot)))
     }
     else {
         match &splited[2].to_ascii_lowercase()[..] {
-            "created" => format!("{}({}){{{}}}",
+            "created" => Ok(format!("{}({}){{{}}}",
                 &splited[1],
-                args_to_string(&arguments_parse(&splited[3..].to_vec())),
+                args_to_string(&arguments_parse(&splited[3..].to_vec())?),
                 transpile(&tree, pivot)
-            ),
+            )),
             _ => {
                 let func_name = &splited[2];
                 let return_type :String;
@@ -47,7 +47,7 @@ pub fn parse_when(tree :&Mem, pivot :usize)->String {
                 }
                 
                 let where_args_end = if where_return > where_is { where_is } else { where_return };
-                let args = &arguments_parse(&splited[3..where_args_end].to_vec());
+                let args = &arguments_parse(&splited[3..where_args_end].to_vec())?;
 
                 unsafe { IS_DYNAMIC = func_is_dynamic }
 
@@ -62,7 +62,7 @@ pub fn parse_when(tree :&Mem, pivot :usize)->String {
 
                 if func_is_dynamic {
                     
-                    format!("{retType} {funcName}({args}) {cst} {{
+                    Ok(format!("{retType} {funcName}({args}) {cst} {{
 static std::map<std::tuple<{argTypes}>, {retType}> __MEMOI;
 auto __MEMOI_ELEMENT=std::tuple<{argTypes}>({argNames});
 if(__MEMOI.count(__MEMOI_ELEMENT)){{
@@ -76,16 +76,16 @@ return __MEMOI[__MEMOI_ELEMENT];}}
                         scope = transpile(&tree, pivot),
                         funcName = func_name,
                         cst = (if func_is_const {"const"} else {""})
-                    )
+                    ))
                 }
                 else {
-                    format!("{} {}({}) {} {{{}}}",
+                    Ok(format!("{} {}({}) {} {{{}}}",
                         return_type,
                         &splited[2],
-                        args_to_string(&arguments_parse(&splited[3..where_args_end].to_vec())),
+                        args_to_string(&arguments_parse(&splited[3..where_args_end].to_vec())?),
                         (if func_is_const {"const"} else {""}),
                         transpile(&tree, pivot)
-                    )
+                    ))
                 }
             }
         }

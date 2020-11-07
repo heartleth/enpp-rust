@@ -11,8 +11,6 @@ pub use blocks::{
     tree
 };
 
-use std::panic;
-
 pub fn transpile(tree :&Mem, pivot :usize)->String {
     let mut ret = String::new();
     let mut iter = 0;
@@ -23,11 +21,11 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
         }
         let parent = tree[pivot].children[iter];
         let elem = &tree[parent];
-        let code = &elem.code;
+        let code = &String::from(elem.code.trim());
         let code_splited = split(&code);
         let keyword = keyword(&code);
         
-        ret = format!("{}{}", ret, &{
+        let parsed = &{
             if regi(&keyword, "^(unless|if|else)$") {
                 blocks::parse_if(&tree, &mut iter, pivot)
             }
@@ -56,7 +54,7 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
                 blocks::parse_namespace(&tree, parent)
             }
             else if regi(&keyword, "^break|continue$") {
-                format!("{};", code)
+                Ok(format!("{};", code))
             }
             else if regi(&keyword, "^public|private|protected$") {
                 blocks::parse_access(&tree, parent)
@@ -73,16 +71,25 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
             else if regi(&keyword, "^about$") {
                 blocks::parse_about(&code)
             }
-            else if first_phrase(&code_splited, true, false) == code_splited.len() - 1 {
-                value_parse(&code, 1) + ";"
+            else if first_phrase(&code_splited, true, false).unwrap() == code_splited.len() - 1 {
+                Ok(value_parse(&code, 1).unwrap() + ";")
             }
-            else if first_clause(&code_splited) == code_splited.len() - 1 {
-                parse_sentence(&code) + ";"
+            else if first_clause(&code_splited).unwrap() == code_splited.len() - 1 {
+                Ok(parse_sentence(&code).unwrap() + ";")
             }
             else {
-                panic!("Invalid sentence")
+                Err("Invalid sentence")
             }
-        });
+        };
+        if let Ok(e) = parsed {
+            ret = format!("{}{}", ret, e);
+        }
+        else if let Err(e) = parsed {
+            eprintln!("In file {}:
+{:3} | {}
+Error: {}
+            ", "main.epp", elem.line, elem.code, e);
+        }
         iter += 1;
     }
     ret

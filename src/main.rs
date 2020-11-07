@@ -30,6 +30,8 @@ use transpile::*;
 //                 `````-----------````
 
 fn main() {
-    let k = String::from("");
+    let k = String::from("
+a b c d
+    ");
     println!("{}", transpile(&tree::CodeTree::treeify(&k), 0));
 }

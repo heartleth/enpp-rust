@@ -1,6 +1,6 @@
 use super::*;
 
-pub fn parse_else(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
+pub fn parse_else(tree :&Mem, nth :&mut usize, parent_idx :usize)->Result<String, &'static str> {
     let mut ret = String::from("else ");
     let parent = &tree[parent_idx];
     let splited = &split(&tree[parent.children[*nth]].code);
@@ -13,7 +13,7 @@ pub fn parse_else(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
     }
     else {
         ret += "if (";
-        ret += &value_parse(&String::from(&code[8..]), 1);
+        ret += &value_parse(&String::from(&code[8..]), 1)?;
         ret += ") {";
         ret += transpile(&tree, parent.children[*nth]).as_str();
         ret += "}\n"
@@ -21,19 +21,20 @@ pub fn parse_else(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
     if *nth < parent.children.len() - 1 && splited.len() > 1 {
         if regi(&keyword(&tree[parent.children[*nth + 1]].code), "^else$") {
             *nth += 1;
-            ret += parse_else(&tree, nth, parent_idx).as_str();
+            ret += parse_else(&tree, nth, parent_idx)?.as_str();
         }
     }
-    ret
+    Ok(ret)
 }
 
-pub fn parse_if(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
+pub fn parse_if(tree :&Mem, nth :&mut usize, parent_idx :usize)->Result<String, &'static str> {
     let mut ret = String::from("if (");
     let parent = &tree[parent_idx];
     let elem = parent.children[*nth];
     let to_parse = &tree[elem];
 
-    ret += &value_parse(&String::from(&to_parse.code[3..]), 1);
+    let condition = value_parse(&String::from(&to_parse.code[3..]), 1)?;
+    ret += &condition;
     ret += ") {";
     ret += transpile(&tree, elem).as_str();
     ret += "}\n";
@@ -41,15 +42,15 @@ pub fn parse_if(tree :&Mem, nth :&mut usize, parent_idx :usize)->String {
     if *nth < parent.children.len() - 1 {
         if regi(&keyword(&tree[parent.children[*nth + 1]].code), "^else$") {
             *nth += 1;
-            ret += parse_else(&tree, nth, parent_idx).as_str();
+            ret += parse_else(&tree, nth, parent_idx)?.as_str();
         }
     }
-    ret
+    Ok(ret)
 }
 
 use std::fs::File;
 use std::io::prelude::*;
-pub fn parse_import(s :&Mem, pivot :usize)->String {
+pub fn parse_import(s :&Mem, pivot :usize)->Result<String, &str> {
     let method = keyword(&s[pivot].code);
     let mut ret = String::new();
     match &method.to_ascii_lowercase()[..] {
@@ -72,5 +73,5 @@ pub fn parse_import(s :&Mem, pivot :usize)->String {
         },
         _=>{}
     };
-    ret
+    Ok(ret)
 }

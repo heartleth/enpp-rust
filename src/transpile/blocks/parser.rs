@@ -27,7 +27,7 @@ pub fn verb_parse(s :&String)->String {
                 "by" => { parsing_mode = Mode::By; },
                 "in" => { parsing_mode = Mode::In; },
                 "of" => { parsing_mode = Mode::Of; },
-                _ => panic!("SyntaxError: VerbError")
+                _ => { parsing_mode = Mode::_None; }
             }
         }
         else if parsing_mode == Mode::Of {

@@ -28,7 +28,7 @@ pub fn keyword(s:&String)->String {
     String::from(&k[0])
 }
 
-pub fn is_bracket(s :&String, (start, end) :(char, char))->bool {
+pub fn is_bracket(s :&String, (start, end) :(char, char))->Result<bool, &'static str> {
     let mut in_string = false;
     let mut escaped = false;
     let mut stack :Vec<char> = Vec::new();
@@ -39,22 +39,22 @@ pub fn is_bracket(s :&String, (start, end) :(char, char))->bool {
             '"' => { if !escaped { in_string = !in_string; } escaped=false; },
             '(' => if !in_string { stack.push('(') },
             ')' => if !in_string {
-                if stack.is_empty() { panic!("괄호쌍 안맞는다 이기야..."); }
+                if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
                 else if *stack.last().unwrap() == '(' { stack.pop(); }
-                else { panic!("괄호쌍 안맞는다 이기야..."); }
+                else { return Err("괄호쌍 안맞는다 이기야..."); }
             },
             '{' => if !in_string { stack.push('{') },
             '}' => if !in_string {
-                if stack.is_empty() { panic!("괄호쌍 안맞는다 이기야..."); }
+                if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
                 else if *stack.last().unwrap() == '{' { stack.pop(); }
-                else { panic!("괄호쌍 안맞는다 이기야..."); }
+                else { return Err("괄호쌍 안맞는다 이기야..."); }
             },
             _ => { escaped=false; }
         };
     }
-    (stack.is_empty())
+    Ok((stack.is_empty())
      && (s.trim().chars().next().unwrap() == start)
-     && (s.trim().chars().last().unwrap() == end)
+     && (s.trim().chars().last().unwrap() == end))
 }
 
 pub fn is_string(s :&String)->bool {
@@ -72,7 +72,7 @@ pub fn is_string(s :&String)->bool {
     true
 }
 
-pub fn existing_keys(s: &Vec<String>)->Vec<String> {
+pub fn existing_keys(s: &Vec<String>)->Result<Vec<String>, &'static str> {
     let mut ret :Vec<String> = Vec::new();
     let mut stack :Vec<()> = Vec::new();
     for elem in s {
@@ -82,7 +82,7 @@ pub fn existing_keys(s: &Vec<String>)->Vec<String> {
                 '(' | '{' => stack.push(has_bracket = true),
                 ')' | '}' => {
                     if stack.is_empty() {
-                        panic!("괄호쌍 안맞는다 이기야...");
+                        return Err("괄호쌍 안맞는다 이기야...");
                     }
                     stack.pop();
                     has_bracket = true;
@@ -97,5 +97,5 @@ pub fn existing_keys(s: &Vec<String>)->Vec<String> {
             ret.push(String::from("%IGNORED%"));
         }
     }
-    ret
+    Ok(ret)
 }

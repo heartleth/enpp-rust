@@ -22,35 +22,35 @@ pub fn type_parse(s :&Vec<String>)->String {
     ret
 }
 
-pub fn declarition_parse(s :&Vec<String>)->Variable {
+pub fn declarition_parse(s :&Vec<String>)->Result<Variable, &'static str> {
     let last = s.len()-1;
-    if s.len() == 0 { panic!("니 변수이름 어디로 운지했노?"); }
+    if s.len() == 0 { return Err("No variable name."); }
     let mut ret = Variable{
         typename: type_parse(&s[0..s.len()-1].to_vec()),
         name: String::from(&s[last])
     };
     if last == 0 { ret.typename=String::from("auto "); }
-    ret
+    Ok(ret)
 }
 
-pub fn arguments_parse(s :&Vec<String>)->Vec<Variable> {
+pub fn arguments_parse(s :&Vec<String>)->Result<Vec<Variable>, &'static str> {
     let mut ret :Vec<Variable> = Vec::new();
     let mut begin = 0;
     let mut end = 0;
 
     for elem in s {
         if elem == "," {
-            ret.push(declarition_parse(&s[begin..end].to_vec()));
+            ret.push(declarition_parse(&s[begin..end].to_vec())?);
             begin = end + 1;
         }
         end += 1;
     }
 
     if s.len() > 0 {
-        ret.push(declarition_parse(&s[begin..].to_vec()));
+        ret.push(declarition_parse(&s[begin..].to_vec())?);
     }
 
-    ret
+    Ok(ret)
 }
 
 pub fn args_to_string(args :&Vec<Variable>)->String {

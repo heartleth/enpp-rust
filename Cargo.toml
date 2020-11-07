@@ -4,7 +4,10 @@ version = "0.1.0"
 authors = ["heartleth <62895113+heartleth@users.noreply.github.com>"]
 edition = "2018"
 
-[Debug]
+[profile.dev]
+panic = "unwind"
+
+[profile.release]
 panic = "unwind"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
