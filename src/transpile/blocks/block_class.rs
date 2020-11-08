@@ -7,7 +7,7 @@ pub fn parse_class(s :&Mem, pivot :usize)->Result<String, &'static str> {
     let mut inheriting = true;
     let mut inherits = String::from(":");
 
-    for elem in &code_splited {
+    for elem in &code_splited[1..] {
         if elem == "type" {
             is_classname = true;
             if inheriting {
@@ -17,7 +17,7 @@ pub fn parse_class(s :&Mem, pivot :usize)->Result<String, &'static str> {
         }
         else if !is_classname {
             if regi(&elem, "object") {
-                inherits.pop();
+                inherits.clear();
                 inheriting = false;
             }
             else {

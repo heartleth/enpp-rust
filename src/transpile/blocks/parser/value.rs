@@ -74,14 +74,8 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
                 }
             }
             let mut vars = String::new();
-            let args = arguments_parse(&list[1..cnt].to_vec())?;
-            for elem in args {
-                vars.push_str(&elem.to_string()[..]);
-            }
-            if vars.len() > 0 {
-                vars.pop();
-                vars.pop();
-            }
+            vars += &args_to_string(&arguments_parse(&list[1..cnt].to_vec())?);
+            
             ret = format!("([&]({}){{return({});}})", vars, &value_parse(&list[cnt+1..].to_vec().join(" "), level)?);
         }
     }
@@ -135,14 +129,24 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         }
     }
     else if level == 5 {
-        left_operator(&mut do_pass, (units, list, "^or$"), &mut |cnt :usize| {
-            ret = format!("({} || {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+        left_operator(&mut do_pass, (units, list, "^(or)?or$"), &mut |cnt :usize| {
+            if regi(&list[cnt], "^oror$") {
+                ret = format!("({} || {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+            }
+            else {
+                ret = format!("({} | {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+            }
             Ok(())
         })?;
     }
     else if level == 6 {
-        left_operator(&mut do_pass, (units, list, "^and$"), &mut |cnt :usize| {
-            ret = format!("({} && {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+        left_operator(&mut do_pass, (units, list, "^(and)?and$"), &mut |cnt :usize| {
+            if regi(&list[cnt], "^andand$") {
+                ret = format!("({} && {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+            }
+            else {
+                ret = format!("({} & {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+            }
             Ok(())
         })?;
     }

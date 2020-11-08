@@ -79,5 +79,5 @@ pub fn parse_new(s :&String)->Result<String, &str> {
         },
         _None => var.to_string()
     };
-    Ok(ret)
+    Ok(ret + ";")
 }

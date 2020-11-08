@@ -4,9 +4,9 @@ use super::*;
 
 pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<usize, &'static str> {
     let operators = if allow_multi {
-        r"^(,|and|or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|[|&]|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|been|do|in)$"
+        r"^(,|and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|been|do|in)$"
     } else {
-        r"^(and|or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|[|&]|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|been|do|in)$"
+        r"^(and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|been|do|in)$"
     };
     
     let mut ret = 0;
