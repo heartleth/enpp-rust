@@ -11,7 +11,7 @@ pub fn parse_repeat(tree :&Mem, pivot :usize)->Result<String, &'static str> {
         .collect::<String>());
 
     Ok(format!("for (int {0}=0;{0}<{1};{0}++) {{\n{scope}}}\n", s,
-        &value_parse(&String::from(&s[7..]), 1)?,
+        &value_parse(&String::from(&tree[pivot].code[7..]), 1)?,
         scope = &transpile(&tree, pivot)
     ))
 }

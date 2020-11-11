@@ -47,14 +47,17 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
         else if first_low == "^(result)$" {
             ret = 2;
             ret += first_clause(&s[2..].to_vec())?;
+            ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
         }
         else if regi(&first_low, r"^(\$|[tw]hat)$") {
             ret = 1;
             ret += first_clause(&s[1..].to_vec())?;
+            ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
         }
         else if first_low == "^(make)$" {
             let to_give = [vec![String::from("a ")], s[1..].to_vec()].concat();
             ret = first_clause(&to_give)?;
+            ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
         }
         else if regi(&first_low, "^(value|addr(ess)?|ptr|pointer)$") {
             ret = 2;
