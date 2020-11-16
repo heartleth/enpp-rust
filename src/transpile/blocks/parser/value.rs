@@ -189,7 +189,7 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             do_pass = false;
             let func_name = &verb_parse(&String::from(&units[0][..&units[0].len()-1]));
             let to_be_evaluated = &value_parse(&list[1..].to_vec().join(" "), 0)?;
-            if to_be_evaluated.chars().next().unwrap() == '(' && to_be_evaluated.chars().last().unwrap() == ')' {
+            if is_bracket(&to_be_evaluated, ('(', ')'))? {
                 ret = format!("{}{}", func_name, to_be_evaluated);
             }
             else {

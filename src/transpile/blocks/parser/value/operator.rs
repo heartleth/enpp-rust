@@ -6,11 +6,34 @@ pub fn left_operator<T>(
     functor :&mut T)->Result<(), &'static str>
     where T : FnMut(usize)->Result<(), &'static str> {
 
+    let mut stack :Vec<char> = Vec::new();
+    let mut in_string = false;
+    let mut escaped = false;
     let mut cnt = 0;
+
     for _ in 0..units.len() {
         let elem = &units[cnt];
-        
-        if regi(&elem, reg) {
+        for e in elem.chars() {
+            match e {
+                '\\' => { escaped = in_string && !escaped },
+                '"' => { if !escaped { in_string = !in_string; } escaped=false; },
+                '(' => if !in_string { stack.push('(') },
+                ')' => if !in_string {
+                    if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
+                    else if *stack.last().unwrap() == '(' { stack.pop(); }
+                    else { return Err("괄호쌍 안맞는다 이기야..."); }
+                },
+                '{' => if !in_string { stack.push('{') },
+                '}' => if !in_string {
+                    if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
+                    else if *stack.last().unwrap() == '{' { stack.pop(); }
+                    else { return Err("괄호쌍 안맞는다 이기야..."); }
+                },
+                _ => { escaped=false; }
+            };
+        }
+
+        if regi(&elem, reg) && !in_string {
             *do_pass = false;
             
             let lport = first_phrase(&list[..cnt].to_vec(), true, false)? + 1;
