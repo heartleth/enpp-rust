@@ -89,6 +89,10 @@ pub fn repl() {
                 leave_main += &transpile(&tree::CodeTree::treeify(&lines.join("\n")), 0);
             }
             else {
+                let file = File::create("engppstd.hpp");
+                file.unwrap().write_all(&blocks::stdlib::STDLIB[..])
+                    .expect("Failed to write standard library file.");
+
                 let mut file = File::create("enpprtpl.cpp").unwrap();
                 file.write_all(format!("{}int main(){{{}{}}}",
                     leave,
