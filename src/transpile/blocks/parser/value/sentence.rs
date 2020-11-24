@@ -8,7 +8,7 @@ pub fn parse_sentence(s :&String)->Result<String, &'static str> {
     let subject_idx = first_phrase(&spl, true, false)?;
     let mut subject = value_parse(&spl[..=subject_idx].to_vec().join(" "), 1)?;
 
-    if subject == "it" {
+    if subject.to_ascii_lowercase() == "it" {
         subject = String::new();
     }
     else { subject+="."; }

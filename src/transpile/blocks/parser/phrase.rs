@@ -35,7 +35,7 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
                 }
             }
         }
-        else if first_low == "^if$" {
+        else if regi(&first_low, "^if$") {
             let mut expression = first_phrase(&s[1..].to_vec(), true, allow_multi)?;
             expression += 1;
             expression += first_phrase(&s[expression+2..].to_vec(), true, allow_multi)?;
@@ -44,7 +44,7 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
             ret += first_phrase(&s[expression+2..].to_vec(), true, allow_multi)?;
             ret += 2;
         }
-        else if first_low == "^(result)$" {
+        else if regi(&first_low, "^(result)$") {
             ret = 2;
             ret += first_clause(&s[2..].to_vec())?;
             ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
@@ -54,7 +54,7 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
             ret += first_clause(&s[1..].to_vec())?;
             ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
         }
-        else if first_low == "^(make)$" {
+        else if regi(&first_low, "^(make)$") {
             let to_give = [vec![String::from("a ")], s[1..].to_vec()].concat();
             ret = first_clause(&to_give)?;
             ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
@@ -84,16 +84,31 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
             }
 
             if !is_breaked || breaker == s.len()-1 {
-                return Ok(0);
+                let mut stack :Vec<()> = Vec::new();
+                let mut i = 0;
+                for elem in s {
+                    match &elem[..] {
+                        "(" => stack.push(()),
+                        ")" => {stack.pop();},
+                        _ => {}
+                    }
+                    if stack.is_empty() {
+                        return Ok(i);
+                    }
+                    i+=1;
+                }
             }
-            let lport = first_phrase(&s[..breaker].to_vec(), true, allow_multi)?;
-            if lport != breaker - 1 {
-                return Ok(lport);
+            else {
+                let lport = first_phrase(&s[..breaker].to_vec(), true, allow_multi)?;
+                if lport != breaker - 1 {
+                    return Ok(lport);
+                }
+                ret = breaker;
+                ret += first_phrase(&s[breaker+1..].to_vec(), true, allow_multi)?;
+                ret += 1;
             }
-            ret = breaker;
-            ret += first_phrase(&s[breaker+1..].to_vec(), true, allow_multi)?;
-            ret += 1;
         }
     }
+
     Ok(ret)
 }

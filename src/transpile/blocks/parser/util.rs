@@ -32,7 +32,7 @@ pub fn is_bracket(s :&String, (start, end) :(char, char))->Result<bool, &'static
     let mut in_string = false;
     let mut escaped = false;
     let mut stack :Vec<char> = Vec::new();
-    
+
     for elem in s.chars() {
         match elem {
             '\\' => { escaped = in_string && !escaped },
@@ -49,7 +49,7 @@ pub fn is_bracket(s :&String, (start, end) :(char, char))->Result<bool, &'static
                 else if *stack.last().unwrap() == '{' { stack.pop(); }
                 else { return Err("괄호쌍 안맞는다 이기야..."); }
             },
-            _ => { escaped=false; }
+            _ => { escaped=false; if stack.is_empty() {return Ok(false)} }
         };
     }
     Ok((stack.is_empty())

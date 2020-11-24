@@ -1,4 +1,4 @@
 library standard
 
 When it starts
-    it println -> "Hello, world!"
+    [1..9] each! |i4 a| ((1 until! a) each! |i4 b| if (b is a) then print:(b, "\n") else print:b)

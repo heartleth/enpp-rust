@@ -91,7 +91,7 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         }
     }
     else if level == 3 {
-        if units[0].to_ascii_lowercase() == "^if$" {
+        if regi(&units[0].to_ascii_lowercase(), "^if$") {
             do_pass = false;
             let first = 1 + first_phrase(&list[1..].to_vec(), true, false)?;
             let second = first + 2 + first_phrase(&list[first+2..].to_vec(), true, false)?;
