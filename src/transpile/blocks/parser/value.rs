@@ -81,13 +81,20 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
     }
     else if level == 2 {
         if regi(&units[0], r"^(make)$") {
+            do_pass = false;
             ret = parse_sentence(&format!("it {}", &s[5..]))?;
         }
         else if regi(&units[0], r"^(result)$") {
+            do_pass = false;
             ret = parse_sentence(&String::from(&s[10..]))?;
         }
         else if regi(&units[0], r"^([wt]hat|\$)$") {
+            do_pass = false;
             ret = parse_sentence(&String::from(&s[5..]))?;
+        }
+        else if regi(&units[0], r"^(to)$") {
+            do_pass = false;
+            ret = format!("[&](){{return({});}}", parse_sentence(&format!("it {}", &s[3..]))?);
         }
     }
     else if level == 3 {

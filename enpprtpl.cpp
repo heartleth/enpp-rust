@@ -1,2 +1,3 @@
 #include "engppstd.hpp"
-int main(){(each(std::vector<int>({1, 2, 3, 4, 5, 6, 7, 8, 9, }), ([&](i4  a){return(((each(((until(1, a))), ([&](i4  b){return(((((b == a))) ? (print(b, "\n")) : (print(b))));})))));})));}
+int main(){auto  print_10 = [&](){return(print(10));};
+;print_10();}

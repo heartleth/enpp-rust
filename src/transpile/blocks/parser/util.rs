@@ -99,3 +99,8 @@ pub fn existing_keys(s: &Vec<String>)->Result<Vec<String>, &'static str> {
     }
     Ok(ret)
 }
+
+#[inline]
+pub fn trim_tail(s :&String)->String {
+    String::from(&split_token(&s, "`")[0])
+}

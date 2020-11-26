@@ -54,7 +54,7 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
             ret += first_clause(&s[1..].to_vec())?;
             ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
         }
-        else if regi(&first_low, "^(make)$") {
+        else if regi(&first_low, "^(make|to)$") {
             let to_give = [vec![String::from("a ")], s[1..].to_vec()].concat();
             ret = first_clause(&to_give)?;
             ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;

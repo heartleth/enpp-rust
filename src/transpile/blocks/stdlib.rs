@@ -33,13 +33,13 @@ std::string static_input(int etag, std::string a = \"\") { static std::map<int, 
 std::string static_input_line(int etag, std::string a = \"\") { static std::map<int, std::string>memoi; if (memoi.count(etag)) { return memoi[etag]; } std::string b; std::cout << a; getline(std::cin, b); memoi.insert(std::make_pair(etag, b)); return b; }
 template<class...T>auto tup(T...arg)->std::tuple<T...> { return std::tuple<T...>(arg...); }
 template<class T>class __folder {
-public:T c; template<class E>__folder& operator<< (E a) { c.push_back(a); return*this; }
-};
+public:T c; template<class E>__folder& operator<< (E a) { c.push_back(a); return*this; }};
 template<class T, class...R>class __gft { public:typedef T CORE; };
 template<class...T>std::vector<typename __gft<T...>::CORE> vec(T...arg) { __folder<std::vector<typename __gft<T...>::CORE>> r; return (r << ... << arg).c; }
 template <class T>std::string to_string(T a) { std::stringstream k; k << a; return k.str(); }
-template<class T, class F>auto map(T c, F f)->std::vector<decltype(f(*c.begin()))> { std::vector<decltype(f(*c.begin()))> g(c.begin(), c.end()); for (auto& i : g) {i=f(i);}return g;}
+template<class T, class F>auto map(T c, F f)->std::vector<typename T::value_type>{std::vector<typename T::value_type>g(c.begin(), c.end());for (auto& i : g) {i = f(i);}return g;}
 template<class T, class F>void each(T c, F f) { std::for_each(c.begin(), c.end(), f); }
+template<class T, class F>auto filter(T c, F f)->std::vector<typename T::value_type> {std::vector<typename T::value_type>a;for(const auto&i:c)if(f(i))a.push_back(i);return a;}
 std::vector<i4>until(i4 b, i4 e) { std::vector<i4>v; for (int i = b; i <= e; i++)v.push_back(i); return v; }
 #ifdef __cpp_lib_ranges
 namespace srv = std::ranges::views;
@@ -49,5 +49,3 @@ using namespace sr;
 #endif
 #endif
 ";
-
-// pub static mut is_dynamic :bool = false;
