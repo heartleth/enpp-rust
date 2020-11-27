@@ -10,6 +10,7 @@ use super::*;
 
 pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
     let s = &String::from(s.trim());
+    if s.len() == 0 { return Ok(String::new()); }
     let mut ret = String::new();
     let mut do_pass = true;
     let list = &split(&s);

@@ -14,14 +14,24 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
     if len == 1 {
         return Ok(0);
     }
+    else if len == 0 {
+        return Err("-1");
+    }
     else {
         let first_low = s[0].to_ascii_lowercase();
         if is_bracket(&s.join(" "), ('(', ')'))? || is_bracket(&s.join(" "), ('{', '}'))? {
-            if first_phrase(&s[1..len - 1].to_vec(), true, true)? == len - 3 {
+            let inner_phrase = first_phrase(&s[1..len - 1].to_vec(), true, true);
+            if let Err(e) = inner_phrase {
+                if e == "-1" {
+                    return Ok(1);
+                }
+            }
+
+            if inner_phrase? == len - 3 {
                 return Ok(len - 1);
             }
             else {
-                return Err("wrong phrase");
+                return Err("wrong phrase in bracket");
             }
         }
         else if is_string(&s.join(" ")) {
@@ -47,21 +57,29 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
         else if regi(&first_low, "^(result)$") {
             ret = 2;
             ret += first_clause(&s[2..].to_vec())?;
-            ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
+            if ret < s.len()-1 {
+                ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
+            }
         }
         else if regi(&first_low, r"^(\$|[tw]hat)$") {
             ret = 1;
             ret += first_clause(&s[1..].to_vec())?;
-            ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
+            if ret < s.len()-1 {
+                ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
+            }
         }
         else if regi(&first_low, "^(make|to)$") {
             let to_give = [vec![String::from("a ")], s[1..].to_vec()].concat();
             ret = first_clause(&to_give)?;
-            ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
+            if ret < s.len()-1 {
+                ret += first_phrase(&s[ret+1..].to_vec(), false, false)? + 1;
+            }
         }
         else if regi(&first_low, "^(value|addr(ess)?|ptr|pointer)$") {
             ret = 2;
-            ret += first_phrase(&s[2..].to_vec(), false, false)?;
+            if ret < s.len()-1 {
+                ret += first_phrase(&s[2..].to_vec(), false, false)?;
+            }
         }
         else if regi(&first_low, r"^[a-zA-Z_]\w*:$") {
             ret = 1;
