@@ -87,6 +87,13 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
         }
         else if regi(&s[is_first as usize], operators) {
             ret = is_first as usize + 1;
+            if regi(&s[is_first as usize], "^(do)$") {
+                if ret + 1 < s.len() {
+                    if regi(&s[ret+1], "^(with|about|for|:|->)$") {
+                        ret += first_clause(&[&[String::from("it")], &s[is_first as usize+1..].to_vec()[..]].concat())?-1;
+                    }
+                }
+            }
             ret += first_phrase(&s[ret..].to_vec(), false, allow_multi)?;
         }
         else {
@@ -100,7 +107,6 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
                 }
                 else { breaker += 1; }
             }
-
             if !is_breaked || breaker == s.len()-1 {
                 let mut stack :Vec<()> = Vec::new();
                 let mut i = 0;
@@ -122,7 +128,14 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
                     return Ok(lport);
                 }
                 ret = breaker;
-                ret += first_phrase(&s[breaker+1..].to_vec(), true, allow_multi)?;
+                if regi(&s[breaker], "^(do)$") {
+                    if ret + 1 < s.len() {
+                        if regi(&s[breaker+1], "^(with|about|for|:|->)$") {
+                            ret += 1 + first_clause(&[&[String::from("it")], &s[breaker+1..].to_vec()[..]].concat())?;
+                        }
+                    }
+                }
+                ret += first_phrase(&s[ret+1..].to_vec(), true, allow_multi)?;
                 ret += 1;
             }
         }

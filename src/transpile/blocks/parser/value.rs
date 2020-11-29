@@ -9,6 +9,9 @@ use super::util::*;
 use super::*;
 
 pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
+    if cfg!(debug_assertions) {
+        println!("{}", s);
+    }
     let s = &String::from(s.trim());
     if s.len() == 0 { return Ok(String::new()); }
     let mut ret = String::new();
@@ -221,9 +224,11 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             do_pass = false;
             ret = format!("{}({})", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?);
         }
-        else if regi(&units[units.len()-2], r"^do$") {
-            do_pass = false;
-            ret = format!("{1}.{0}()", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?);
+        else {
+            left_operator(&mut do_pass, (units, list, r"^do$"), &mut |cnt :usize| {
+                ret = format!("{1}.{0}", parse_sentence(&format!("it {}", &units[cnt+1..].to_vec().join(" ")))?, &value_parse(&list[0..cnt].to_vec().join(" "), 1)?);
+                Ok(())
+            })?;
         }
     }
     else if level == 12 {
