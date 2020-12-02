@@ -35,8 +35,7 @@ pub fn left_operator<T>(
 
         if regi(&elem, reg) && !in_string {
             *do_pass = false;
-            
-            let lport = first_phrase(&list[..cnt].to_vec(), true, false)? + 1;
+            let lport = first_phrase(&list[..cnt].to_vec(), true, true)? + 1;
             if lport != cnt {
                 return Err("SyntaxError: phrase left of the operator is too short.");
             }

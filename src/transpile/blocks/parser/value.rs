@@ -62,7 +62,7 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
     }
 
     if level == 0 {
-        left_operator(&mut do_pass, (units, list, "^(,)$"), &mut |cnt :usize| {
+        left_operator(&mut do_pass, (units, list, "^,$"), &mut |cnt :usize| {
             ret = format!("{}, {}", &value_parse(&list[..cnt].to_vec().join(" "), 0)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 0)?);
             Ok(())
         })?;
@@ -163,10 +163,10 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
     }
     else if level == 7 {
         left_operator(&mut do_pass, (units, list, "^(is(not)?|[<>]=?)$"), &mut |cnt :usize| {
-            if regi(&list[cnt], r"is") {
+            if regi(&list[cnt], r"^is$") {
                 ret = format!("({} == {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
             }
-            else if regi(&list[cnt], r"not") {
+            else if regi(&list[cnt], r"^isnot$") {
                 ret = format!("({} != {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
             }
             else {
@@ -196,6 +196,16 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         })?;
     }
     else if level == 10 {
+        left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_]\w*!$"), &mut |cnt :usize| {
+            ret = format!("({}({}, {}))", 
+                &verb_parse(&String::from(&units[cnt][..&units[cnt].len()-1])),
+                &value_parse(&list[..cnt].to_vec().join(" "), 1)?,
+                &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?
+            );
+            Ok(())
+        })?;
+    }
+    else if level == 11 {
         if regi(&units[0], r"^[a-zA-Z_]\w*:$") {
             do_pass = false;
             let func_name = &verb_parse(&String::from(&units[0][..&units[0].len()-1]));
@@ -208,18 +218,8 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
 
             }
         }
-        else {
-            left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_]\w*!$"), &mut |cnt :usize| {
-                ret = format!("({}({}, {}))", 
-                    &verb_parse(&String::from(&units[cnt][..&units[cnt].len()-1])),
-                    &value_parse(&list[..cnt].to_vec().join(" "), 1)?,
-                    &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?
-                );
-                Ok(())
-            })?;
-        }
     }
-    else if level == 11 {
+    else if level == 12 {
         if regi(&units[units.len()-2], r"^(been)$") {
             do_pass = false;
             ret = format!("{}({})", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?);
@@ -231,19 +231,19 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             })?;
         }
     }
-    else if level == 12 {
+    else if level == 13 {
         if regi(&units[units.len()-2], r"^(in)$") {
             do_pass = false;
             ret = format!("{}::{}", &units[units.len()-1], &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?);
         }
     }
-    else if level == 13 {
+    else if level == 14 {
         if regi(&units[units.len()-2], r"^(having)$") {
             do_pass = false;
             ret = format!("{}.{}", &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?, &units[units.len()-1]);
         }
     }
-    else if level == 14 {
+    else if level == 15 {
         if regi(&units[0], r"^(value|addr(ess)?|pointer|ptr)$") {
             do_pass = false;
             if regi(&units[0], r"^(value)$") {
@@ -254,12 +254,12 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             }
         }
     }
-    else if level >= 15 {
+    else if level > 15 {
         if is_string(&s) {
             return Ok(format!("{}", s));
         }
         else {
-            return Err("SyntaxError: invalid phrase");
+            return Err("SyntaxError: no matching operator");
         }
     }
 

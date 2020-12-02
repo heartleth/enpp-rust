@@ -1,2 +1,2 @@
 #include "engppstd.hpp"
-int main(){a.b(1).c().d();}
+int main(){(each(vec(1, 2, 3), ([&](auto  e){return(print(e));})));}

@@ -40,7 +40,18 @@ template <class T>std::string to_string(T a) { std::stringstream k; k << a; retu
 template<class T, class F>auto map(T c, F f)->std::vector<typename T::value_type>{std::vector<typename T::value_type>g(c.begin(), c.end());for (auto& i : g) {i = f(i);}return g;}
 template<class T, class F>void each(T c, F f) { std::for_each(c.begin(), c.end(), f); }
 template<class T, class F>auto filter(T c, F f)->std::vector<typename T::value_type> {std::vector<typename T::value_type>a;for(const auto&i:c)if(f(i))a.push_back(i);return a;}
-std::vector<i4>until(i4 b, i4 e) { std::vector<i4>v; for (int i = b; i <= e; i++)v.push_back(i); return v; }
+template<class T1, class T2>std::vector<typename T1::value_type> cat(T1 a, T2 b) {std::vector<typename T1::value_type> ret(a.begin(), a.end());ret.insert(ret.end(), b.begin(), b.end());return ret;}
+class range {private:int start;int End;int diff;public:typedef int value_type;
+range(int _end) {start = 0;End = _end;diff = 1;}
+range(int _start, int _end, int _diff = 1) {start = _start;End = _end;diff = _diff;}
+class iterator {private:int _diff;public:int _val;iterator(int v, int d) :_val(v), _diff(d) {}
+auto operator++()->iterator& {_val += _diff;return *this;}
+inline int operator*() {return _val;}
+int operator==(iterator i) {return (i._val == _val);}
+int operator!=(iterator i) {return (i._val >= _val+_diff);}};
+inline auto begin()->iterator {return iterator(start, diff);}
+inline auto end()->iterator {return iterator(End + diff, diff);}};
+inline range until(i4 a, i4 b) { return range(a,b); }
 #ifdef __cpp_lib_ranges
 namespace srv = std::ranges::views;
 namespace sr = std::ranges;
