@@ -1,2 +1,2 @@
 #include "engppstd.hpp"
-int main(){(each(vec(1, 2, 3), ([&](auto  e){return(print(e));})));}
+int main(){println((fold(vec(1, 2, 3, 4, 5), ([&](auto  ...a){return(((... + a)));}))));}
