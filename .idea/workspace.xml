@@ -6,12 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="88b4ac58-8100-4551-b548-49bfb42c1b08" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/enpprtpl.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/enpprtpl.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/transpile/blocks/block_new.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/transpile/blocks/block_new.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/transpile/blocks/parser/clause.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/transpile/blocks/parser/clause.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/transpile/blocks/parser/phrase.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/transpile/blocks/parser/phrase.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/transpile/blocks/parser/value.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/transpile/blocks/parser/value.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/transpile/blocks/parser/value/sentence.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/transpile/blocks/parser/value/sentence.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +32,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunManager" selected="Cargo.Run engpp">
     <configuration name="Run engpp" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
