@@ -68,8 +68,8 @@ to print about 10
 Eng++에서 주어가 it인 경우에는 수동태의 by를 생략할 수 있습니다.  
 만약 주어가 it이 아니라면, `-by-` 로 연결 해 주어야 합니다.
 ```asm
-10 was push_back`ed to vect
-; 10이 vect에 밀어넣어졌다.
+10 was push_back`ed-by-vect
+; 이 경우 -to- 가 더 자연스럽지만 아직 지원을 하지 않습니다. 조만간 지원할 예정
 ```
 
 정말 자연스럽죠?
