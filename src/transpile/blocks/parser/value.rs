@@ -98,7 +98,11 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         }
         else if regi(&units[0], r"^(to)$") {
             do_pass = false;
-            ret = format!("[&](){{return({});}}", parse_sentence(&format!("it {}", &s[3..]))?);
+            let func_call = parse_sentence(&format!("it {}", &s[3..]))?;
+            ret = format!("[&](auto...pp){{return({}{}pp...));}}",
+                &func_call[..func_call.len()-1],
+                if func_call.chars().nth(func_call.len()-2).unwrap() == '(' {""} else {", "}
+            );
         }
     }
     else if level == 3 {
@@ -220,16 +224,28 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         }
     }
     else if level == 12 {
-        if regi(&units[units.len()-2], r"^(been)$") {
-            do_pass = false;
-            ret = format!("{}({})", &verb_parse(&units[units.len()-1]), &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?);
-        }
-        else {
-            left_operator(&mut do_pass, (units, list, r"^do$"), &mut |cnt :usize| {
-                ret = format!("{1}.{0}", parse_sentence(&format!("it {}", &units[cnt+1..].to_vec().join(" ")))?, &value_parse(&list[0..cnt].to_vec().join(" "), 1)?);
-                Ok(())
-            })?;
-        }
+        left_operator(&mut do_pass, (units, list, r"^(was|were|do)$"), &mut |cnt :usize| {
+            if regi(&units[cnt], "^(do)$") {
+                ret = format!("{1}.{0}", parse_sentence(&format!("it {}", &units[cnt + 1..].to_vec().join(" ")))?, &value_parse(&list[0..cnt].to_vec().join(" "), 1)?);
+            }
+            else {
+                let prep = units.get(cnt + 2);
+                let has_prep =
+                    if let Some(txt) = prep { regi(&txt, "^(to|of|with|about|for|:|->)$")  }
+                    else { false };
+                if has_prep {
+                    ret = format!("{}({}, {})",
+                        verb_parse(&units[cnt+1]),
+                        value_parse(&list[..cnt].to_vec().join(" "), 0)?,
+                        value_parse(&list[cnt+3..].to_vec().join(" "), 1)?
+                    );
+                }
+                else {
+                    ret = format!("{}({})", verb_parse(&units[cnt+1]), value_parse(&list[..cnt].to_vec().join(" "), 1)?);
+                }
+            }
+            Ok(())
+        })?;
     }
     else if level == 13 {
         if regi(&units[units.len()-2], r"^(in)$") {

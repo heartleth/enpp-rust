@@ -13,7 +13,7 @@ pub fn parse_sentence(s :&String)->Result<String, &'static str> {
     }
     else { subject+="."; }
     
-    if spl.len() > subject_idx + 2 && regi(&spl[subject_idx + 2], "^(->|with|about|for|:)$") {
+    if spl.len() > subject_idx + 2 && regi(&spl[subject_idx + 2], "^(->|(to|of|with|about|for|:|->)|about|for|:)$") {
         ret = format!("{}{}({})",
             &subject,
             &spl[subject_idx + 1],

@@ -26,7 +26,7 @@ pub fn parse_new(s :&String)->Result<String, &str> {
 
     let mut where_as = 1;
     for elem in &splited[1..] {
-        if regi(&elem, "^(as|is|:|->|for|with|about)$") { break; }
+        if regi(&elem, "^(as|is|:|->|for|of|to|with|about)$") { break; }
         else { where_as += 1; }
     }
 
@@ -36,6 +36,7 @@ pub fn parse_new(s :&String)->Result<String, &str> {
     else {
         init_type = match &splited[where_as].to_ascii_lowercase()[..] {
             ":" | "->" |
+            "to" | "of" |
             "for" | "about" |
             "with" => InitType::Constructor,
             "is" => InitType::RefType,

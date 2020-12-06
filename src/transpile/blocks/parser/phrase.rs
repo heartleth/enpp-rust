@@ -4,9 +4,9 @@ use super::*;
 
 pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<usize, &'static str> {
     let operators = if allow_multi {
-        r"^(,|and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|been|do|in)$"
+        r"^(,|and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|was|were|do|in)$"
     } else {
-        r"^(and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|been|do|in)$"
+        r"^(and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|was|were|do|in)$"
     };
     
     let mut ret = 0;
@@ -87,9 +87,9 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
         }
         else if regi(&s[is_first as usize], operators) {
             ret = is_first as usize + 1;
-            if regi(&s[is_first as usize], "^(do)$") {
+            if regi(&s[is_first as usize], "^(do|was|were)$") {
                 if ret + 1 < s.len() {
-                    if regi(&s[ret+1], "^(with|about|for|:|->)$") {
+                    if regi(&s[ret+1], "^(to|of|with|about|for|:|->)$") {
                         ret += first_clause(&[&[String::from("it")], &s[is_first as usize+1..].to_vec()[..]].concat())?-1;
                     }
                 }
@@ -128,9 +128,9 @@ pub fn first_phrase(s :&Vec<String>, is_first :bool, allow_multi :bool)->Result<
                     return Ok(lport);
                 }
                 ret = breaker;
-                if regi(&s[breaker], "^(do)$") {
+                if regi(&s[breaker], "^(do|was|were)$") {
                     if ret + 1 < s.len() {
-                        if regi(&s[breaker+1], "^(with|about|for|:|->)$") {
+                        if regi(&s[breaker+1], "^(to|of|with|about|for|:|->)$") {
                             ret += 1 + first_clause(&[&[String::from("it")], &s[breaker+1..].to_vec()[..]].concat())?;
                         }
                     }
