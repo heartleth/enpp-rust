@@ -75,22 +75,29 @@ pub fn is_string(s :&String)->bool {
 pub fn existing_keys(s: &Vec<String>)->Result<Vec<String>, &'static str> {
     let mut ret :Vec<String> = Vec::new();
     let mut stack :Vec<()> = Vec::new();
+    let mut in_lambda = false;
+    let mut in_string = false;
+    let mut escaped = false;
+
     for elem in s {
         let mut has_bracket = false;
         for i in elem.chars() {
             match i {
-                '(' | '{' => stack.push(has_bracket = true),
-                ')' | '}' => {
+                '(' | '{' => if !in_string {stack.push(has_bracket = true)},
+                ')' | '}' => if !in_string {
                     if stack.is_empty() {
                         return Err("괄호쌍 안맞는다 이기야...");
                     }
                     stack.pop();
                     has_bracket = true;
                 },
-                _ => {}
+                '|' => in_lambda = !in_lambda,
+                '\\' => { escaped = in_string && !escaped },
+                '"' => { if !escaped { in_string = !in_string; } escaped=false; },
+                _ => escaped=false
             }
         }
-        if !has_bracket && stack.is_empty() {
+        if !has_bracket && !in_lambda && stack.is_empty() {
             ret.push(String::from(elem));
         }
         else {

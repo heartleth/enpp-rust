@@ -111,10 +111,10 @@ fn count_brackets(s :&str, brackets :&mut Vec<char>) {
     let mut escaped = false;
     for elem in s.chars() {
         match elem {
-            '(' => { brackets.push('('); },
-            ')' => { if brackets.last().unwrap() == &'(' { brackets.pop(); } },
-            '{' => { brackets.push('{'); },
-            '}' => { if brackets.last().unwrap() == &'{' { brackets.pop(); } },
+            '(' => if !in_string { brackets.push('('); },
+            ')' => if !in_string { if brackets.last().unwrap() == &'(' { brackets.pop(); } },
+            '{' => if !in_string { brackets.push('{'); },
+            '}' => if !in_string { if brackets.last().unwrap() == &'{' { brackets.pop(); } },
             '"' => {
                 if !escaped { in_string = !in_string }
                 escaped=false;

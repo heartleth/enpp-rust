@@ -23,7 +23,7 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         if is_string(&s) {
             return Ok(format!("{}", s));
         }
-        if units[0].as_bytes()[0] == '[' as u8 {
+        if units[0].chars().next().unwrap() == '[' {
             let valid = String::from(&s[1..units[0].len() - 1]);
             let range :Vec<String> = split_token(&valid, "\\.");
             let step = range.len() - 1;
@@ -68,10 +68,10 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         })?;
     }
     else if level == 1 {
-        if units[0] == "|" {
+        if list[0] == "|" {
             do_pass = false;
             let mut cnt = 0;
-            for elem in &units[1..].to_vec() {
+            for elem in &list[1..].to_vec() {
                 cnt += 1;
                 if elem == "|" {
                     break;

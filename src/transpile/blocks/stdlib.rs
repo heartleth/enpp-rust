@@ -38,7 +38,7 @@ template<class...T>void println(const T&...arg) { (std::cout << ... << arg); std
 template<class T, class...R>class __gft { public:typedef T CORE; };
 template<class...T>std::vector<typename __gft<T...>::CORE> vec(T...arg) { __folder<std::vector<typename __gft<T...>::CORE>> r; return (r << ... << arg).c; }
 template<class T>std::string make_string(T a) { std::stringstream k; k << a; return k.str(); }
-template<class T, class F>auto map(T c, F f)->std::vector<typename T::value_type> { std::vector<typename T::value_type>g(c.begin(), c.end()); for (auto& i : g) { i = f(i); }return g; }
+template<class T, class F>auto map(T c, F f)->std::vector<decltype(f(*c.begin()))> { std::vector<decltype(f(*c.begin()))>g; for (auto& i : c) { g.push_back(f(i)); }return g; }
 template<class T, class F>void each(T c, F f) { std::for_each(c.begin(), c.end(), f); }
 template<class T, class F>auto filter(T c, F f)->std::vector<typename T::value_type> { std::vector<typename T::value_type>a; for (const auto& i : c)if (f(i))a.push_back(i); return a; }
 template<typename T, typename F>auto integrate(T c, F f)->std::vector<decltype(f(*c.begin(), *c.begin()))> { typedef typename T::value_type vt; auto iter = c.begin(); vt rdc = *iter; std::vector<vt>ret;ret.push_back(rdc); iter++;

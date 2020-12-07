@@ -1,4 +1,12 @@
 library standard
 
 When it starts
-    [1..9] each! |i4 a| ((1 until! a) each! |i4 b| if (b is a) then print:(b, "\n") else print:b)
+    Let s as input_line:()
+
+    s filter! (|e| e is "("[0] or e is ")"[0])
+
+    ret map! (|e| if e is "("[0] then 1 else -1)
+
+    ret integrate! (|a, b|(a + b))
+
+    ret fold! (|a, b| if a > b then a else b)
