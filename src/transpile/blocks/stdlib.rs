@@ -41,8 +41,8 @@ template<class T>std::string to_string(T a) { std::stringstream k; k << a; retur
 template<class T, class F>auto map(T c, F f)->std::vector<typename T::value_type> { std::vector<typename T::value_type>g(c.begin(), c.end()); for (auto& i : g) { i = f(i); }return g; }
 template<class T, class F>void each(T c, F f) { std::for_each(c.begin(), c.end(), f); }
 template<class T, class F>auto filter(T c, F f)->std::vector<typename T::value_type> { std::vector<typename T::value_type>a; for (const auto& i : c)if (f(i))a.push_back(i); return a; }
-template<typename T, typename F>auto integrate(T c, F f)->std::vector<decltype(f(*c.begin(), *c.begin()))> { typedef typename T::value_type vt; auto iter = c.begin(); vt rdc = *iter; std::vector<vt>ret;
-for (; iter != c.end(); iter++) { ret.push_back(rdc); rdc = f(rdc, *iter); }return ret; }
+template<typename T, typename F>auto integrate(T c, F f)->std::vector<decltype(f(*c.begin(), *c.begin()))> { typedef typename T::value_type vt; auto iter = c.begin(); vt rdc = *iter; std::vector<vt>ret;ret.push_back(rdc); iter++;
+for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); ret.push_back(rdc); }return ret; }
 template<typename T, typename F, typename vt = typename T::value_type>auto fold(const T & c, const F & f)->decltype(f(*c.begin(), *c.begin())) { auto iter = c.begin(); vt rdc = *iter; iter++; std::vector<vt>ret; for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); }return rdc; }
 template<typename T, typename F, typename vt>auto bfold(const vt & d, const T & c, const F & f)->decltype(f(vt(), *c.begin())) { auto iter = c.begin(); vt rdc = d; std::vector<vt>ret; for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); }return rdc; }
 template<class T1, class T2>std::vector<typename T1::value_type> cat(T1 a, T2 b) { std::vector<typename T1::value_type> ret(a.begin(), a.end()); ret.insert(ret.end(), b.begin(), b.end()); return ret; }

@@ -1,5 +1,8 @@
 /target
+/.vscode
+/.idea
 *.exe
 *.bat
 engppstd.hpp
-enpprtpl.cpp
+*.cpp
+*.epp
