@@ -37,7 +37,7 @@ template<class...T>void print(const T&...arg) { (std::cout << ... << arg); }
 template<class...T>void println(const T&...arg) { (std::cout << ... << arg); std::cout << std::endl; }
 template<class T, class...R>class __gft { public:typedef T CORE; };
 template<class...T>std::vector<typename __gft<T...>::CORE> vec(T...arg) { __folder<std::vector<typename __gft<T...>::CORE>> r; return (r << ... << arg).c; }
-template<class T>std::string to_string(T a) { std::stringstream k; k << a; return k.str(); }
+template<class T>std::string make_string(T a) { std::stringstream k; k << a; return k.str(); }
 template<class T, class F>auto map(T c, F f)->std::vector<typename T::value_type> { std::vector<typename T::value_type>g(c.begin(), c.end()); for (auto& i : g) { i = f(i); }return g; }
 template<class T, class F>void each(T c, F f) { std::for_each(c.begin(), c.end(), f); }
 template<class T, class F>auto filter(T c, F f)->std::vector<typename T::value_type> { std::vector<typename T::value_type>a; for (const auto& i : c)if (f(i))a.push_back(i); return a; }
