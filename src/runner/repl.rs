@@ -82,7 +82,7 @@ pub fn repl() {
         }
 
         if will_evaluated {
-            if regi(&header, "^(class|when|make|have)$") {
+            if regi(&header, "^(class|when|make|have|lib(rary)?|import)$") {
                 leave += &transpile(&tree::CodeTree::treeify(&lines.join("\n")), 0);
             }
             else if regi(&header, "^(let|set)$") {
@@ -102,7 +102,7 @@ pub fn repl() {
                 drop(file);
                 
                 if cfg!(target_os = "windows") {
-                    Command::new("cmd").args(&["/C", "g++ -o out enpprtpl.cpp -std=c++17"]).spawn()
+                    Command::new("cmd").args(&["/C", "g++ -o out enpprtpl.cpp -std=c++17 -pthread"]).spawn()
                         .expect("failed to execute process").wait()
                         .expect("failed to wait");
                     Command::new("cmd").args(&["/C", ".\\out"]).spawn()

@@ -69,7 +69,7 @@ pub fn parse_import(s :&Mem, pivot :usize)->Result<String, &str> {
                     .expect("Failed to write standard library file.");
             }
             else {
-                ret = format!("#include <{}>\n", &s[pivot].code[7..]);
+                ret = format!("#include <{}>\n", &split(&s[pivot].code)[1]);
             }
         },
         _=>{}
