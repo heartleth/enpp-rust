@@ -102,7 +102,7 @@ pub fn repl() {
                 drop(file);
                 
                 if cfg!(target_os = "windows") {
-                    Command::new("cmd").args(&["/C", "g++ -o out enpprtpl.cpp -std=c++17 -pthread"]).spawn()
+                    Command::new("cmd").args(&["/C", "g++ -o out enpprtpl.cpp -std=c++20 -lpthread"]).spawn()
                         .expect("failed to execute process").wait()
                         .expect("failed to wait");
                     Command::new("cmd").args(&["/C", ".\\out"]).spawn()
@@ -110,12 +110,12 @@ pub fn repl() {
                         .expect("failed to wait");
                 }
                 else {
-                        Command::new("sh").args(&["-c", "g++ -o out enpprtpl.cpp -std=c++17"]).spawn()
-                            .expect("failed to execute process").wait()
-                            .expect("failed to wait");
-                        Command::new("sh").args(&["-c", "./out"]).spawn()
-                            .expect("failed to execute process").wait()
-                            .expect("failed to wait");
+                    Command::new("sh").args(&["-c", "g++ -o out enpprtpl.cpp -std=c++17 -pthread"]).spawn()
+                        .expect("failed to execute process").wait()
+                        .expect("failed to wait");
+                    Command::new("sh").args(&["-c", "./out"]).spawn()
+                        .expect("failed to execute process").wait()
+                        .expect("failed to wait");
                 }
             }
             indents = 0;

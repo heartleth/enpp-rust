@@ -200,14 +200,24 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         })?;
     }
     else if level == 10 {
-        left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_]\w*!$"), &mut |cnt :usize| {
-            ret = format!("({}({}, {}))", 
-                &verb_parse(&String::from(&units[cnt][..&units[cnt].len()-1])),
-                &value_parse(&list[..cnt].to_vec().join(" "), 1)?,
-                &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?
-            );
-            Ok(())
-        })?;
+        if regi(&units[0], "^(await)$") {
+            do_pass = false;
+            ret = format!("({}).get()", &value_parse(&list[1..].to_vec().join(" "), 1)?);
+        }
+        else if regi(&units[0], "^(async)$") {
+            do_pass = false;
+            ret = format!("async({})", &value_parse(&list[1..].to_vec().join(" "), 1)?);
+        }
+        else {
+            left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_]\w*!$"), &mut |cnt: usize| {
+                ret = format!("({}({}, {}))",
+                      &verb_parse(&String::from(&units[cnt][..&units[cnt].len() - 1])),
+                      &value_parse(&list[..cnt].to_vec().join(" "), 1)?,
+                      &value_parse(&list[cnt + 1..].to_vec().join(" "), 1)?
+                );
+                Ok(())
+            })?;
+        }
     }
     else if level == 11 {
         if regi(&units[0], r"^[a-zA-Z_]\w*:$") {

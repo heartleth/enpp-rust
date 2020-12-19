@@ -1,2 +1,2 @@
 #include "engppstd.hpp"
-int main(){println(1);}
+int main(){println((async(([&](){return(20);}))).get());}
