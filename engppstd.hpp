@@ -47,6 +47,7 @@ for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); ret.push_back(rdc); }retu
 template<typename T, typename F, typename vt = typename T::value_type>auto fold(const T & c, const F & f)->decltype(f(*c.begin(), *c.begin())) { auto iter = c.begin(); vt rdc = *iter; iter++; std::vector<vt>ret; for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); }return rdc; }
 template<typename T, typename F, typename vt>auto bfold(const vt & d, const T & c, const F & f)->decltype(f(vt(), *c.begin())) { auto iter = c.begin(); vt rdc = d; std::vector<vt>ret; for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); }return rdc; }
 template<class T1, class T2>std::vector<typename T1::value_type> cat(T1 a, T2 b) { std::vector<typename T1::value_type> ret(a.begin(), a.end()); ret.insert(ret.end(), b.begin(), b.end()); return ret; }
+template<class T>T wait(T s) { std::this_thread::sleep_for(s); return s; }
 class range {private:int start; int End; int diff; public:typedef int value_type;typedef const int& const_reference;typedef int&reference;
 range(int _end) { start = 0; End = _end; diff = 1; }
 range(int _start, int _end, int _diff = 1) { start = _start; End = _end; diff = _diff; }

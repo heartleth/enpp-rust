@@ -60,10 +60,13 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
     else if is_bracket(&s, ('{', '}'))? {
         return Ok(format!("{{{}}}", &value_parse(&String::from(&s[1..s.len()-1]), 0)?));
     }
-
     if level == 0 {
         left_operator(&mut do_pass, (units, list, "^,$"), &mut |cnt :usize| {
-            ret = format!("{}, {}", &value_parse(&list[..cnt].to_vec().join(" "), 0)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 0)?);
+            let (left_s, right_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
+            let left = std::thread::spawn(move || value_parse(&left_s, 0));
+            let right = std::thread::spawn(move || value_parse(&right_s, 0));
+            
+            ret = format!("{}, {}", left.join().unwrap()?, right.join().unwrap()?);
             Ok(())
         })?;
     }
@@ -123,7 +126,7 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             cnt -= 1;
             let elem = &units[cnt];
 
-            if regi(&elem, r"^(=|as|[a-zA-Z_]\w*=)$") {
+            if regi(&elem, r"^(=|as|[a-zA-Z_][a-zA-Z_0-9\-]*=)$") {
                 let lport = first_phrase(&list[..cnt].to_vec(), true, false)? + 1;
                 if lport != cnt {
                     return Err("SyntaxError: phrase left of the operator 'as' is too short.");
@@ -134,11 +137,14 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
                     ret = format!("({} = {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
                 }
                 else {
+                    let (to_assign_s, argument_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
+                    let (to_assign, argument) = (
+                        std::thread::spawn(move || value_parse(&to_assign_s, 1)),
+                        std::thread::spawn(move || value_parse(&argument_s, 1)));
                     ret = format!("({to_assign} = {functor}({to_assign}, {argument}))", 
-                        to_assign = &value_parse(&list[..cnt].to_vec().join(" "), 1)?,
-                        argument = &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?,
-                        functor = &elem[..elem.len()-1]
-                    );
+                        to_assign = to_assign.join().unwrap()?,
+                        argument = argument.join().unwrap()?,
+                        functor = &elem[..elem.len()-1]);
                 }
             }
         }
@@ -181,15 +187,23 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
     }
     else if level == 8 {
         left_operator(&mut do_pass, (units, list, "^([+-]|plus|minus)$"), &mut |cnt :usize| {
+            let operator;
             if regi(&units[cnt], "^plus$") {
-                ret = format!("({} + {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+                operator = String::from("+");
             }
             else if regi(&units[cnt], "^minus$") {
-                ret = format!("({} + {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
+                operator = String::from("-");
             }
             else {
-                ret = format!("({} {operator} {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?, operator = &units[cnt]);
+                operator = String::from(&units[cnt]);
             }
+            
+            let (left_s, right_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
+            let (left, right) = (
+                std::thread::spawn(move || value_parse(&left_s, 1)),
+                std::thread::spawn(move || value_parse(&right_s, 1)));
+
+            ret = format!("({} {operator} {})", left.join().unwrap()?, right.join().unwrap()?, operator = operator);
             Ok(())
         })?;
     }
@@ -209,18 +223,23 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             ret = format!("async({})", &value_parse(&list[1..].to_vec().join(" "), 1)?);
         }
         else {
-            left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_]\w*!$"), &mut |cnt: usize| {
+            left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_][a-zA-Z_0-9\-]*!$"), &mut |cnt: usize| {
+                let (left_s, right_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
+                let (left, right) = (
+                    std::thread::spawn(move || value_parse(&left_s, 1)),
+                    std::thread::spawn(move || value_parse(&right_s, 1)));
+
                 ret = format!("({}({}, {}))",
-                      &verb_parse(&String::from(&units[cnt][..&units[cnt].len() - 1])),
-                      &value_parse(&list[..cnt].to_vec().join(" "), 1)?,
-                      &value_parse(&list[cnt + 1..].to_vec().join(" "), 1)?
+                    &verb_parse(&String::from(&units[cnt][..&units[cnt].len() - 1])),
+                    left.join().unwrap()?,
+                    right.join().unwrap()?
                 );
                 Ok(())
             })?;
         }
     }
     else if level == 11 {
-        if regi(&units[0], r"^[a-zA-Z_]\w*:$") {
+        if regi(&units[0], r"^[a-zA-Z_][a-zA-Z_0-9\-]*:$") {
             do_pass = false;
             let func_name = &verb_parse(&String::from(&units[0][..&units[0].len()-1]));
             let to_be_evaluated = &value_parse(&list[1..].to_vec().join(" "), 0)?;
