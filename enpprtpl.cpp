@@ -1,2 +1,2 @@
 #include "engppstd.hpp"
-int main(){(async([&](auto...pp){return(println(20, pp...));})).wait();}
+int main(){println((async(([&](){return(20);}))).get());}

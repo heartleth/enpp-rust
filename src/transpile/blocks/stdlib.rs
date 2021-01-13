@@ -18,6 +18,7 @@ pub static STDLIB :&[u8] = b"
 #endif
 #define jthread(t) std::thread((t)).join()
 #define dthread(t) std::thread((t)).detach()
+struct __constructor{__constructor(){std::cout<<std::boolalpha;}}__Construct;
 typedef char i1; typedef short i2; typedef long i4; typedef long long i8;
 typedef unsigned char u1; typedef unsigned short u2; typedef unsigned long u4; typedef unsigned long long u8;
 typedef float f4; typedef double f8; typedef long double ld;

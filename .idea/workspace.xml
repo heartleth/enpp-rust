@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="88b4ac58-8100-4551-b548-49bfb42c1b08" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/enpprtpl.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/enpprtpl.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/runner/repl.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/runner/repl.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/transpile/blocks/parser/phrase.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/transpile/blocks/parser/phrase.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/transpile/blocks/parser/value.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/transpile/blocks/parser/value.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -114,10 +111,10 @@
     </configuration>
     <list>
       <item itemvalue="Cargo.rels" />
-      <item itemvalue="Cargo.Run engpp" />
       <item itemvalue="Cargo.Run engpp (1)" />
       <item itemvalue="Cargo.Run engpp (2)" />
       <item itemvalue="Cargo.Run engpp (3)" />
+      <item itemvalue="Cargo.Run engpp" />
     </list>
     <recent_temporary>
       <list>

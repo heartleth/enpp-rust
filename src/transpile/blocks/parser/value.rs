@@ -64,9 +64,8 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         left_operator(&mut do_pass, (units, list, "^,$"), &mut |cnt :usize| {
             let (left_s, right_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
             let left = std::thread::spawn(move || value_parse(&left_s, 0));
-            let right = std::thread::spawn(move || value_parse(&right_s, 0));
-            
-            ret = format!("{}, {}", left.join().unwrap()?, right.join().unwrap()?);
+            let right = &value_parse(&right_s, 0)?;
+            ret = format!("{}, {}", left.join().unwrap()?, right);
             Ok(())
         })?;
     }
@@ -137,13 +136,12 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
                     ret = format!("({} = {})", &value_parse(&list[..cnt].to_vec().join(" "), 1)?, &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?);
                 }
                 else {
-                    let (to_assign_s, argument_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
-                    let (to_assign, argument) = (
-                        std::thread::spawn(move || value_parse(&to_assign_s, 1)),
-                        std::thread::spawn(move || value_parse(&argument_s, 1)));
+                    let (to_assign_s, argument_s) = (String::from(&list[..cnt].to_vec().join(" ")), &list[cnt+1..].to_vec().join(" "));
+                    let to_assign = std::thread::spawn(move || value_parse(&to_assign_s, 1));
+                    let argument = &value_parse(&argument_s, 1)?;
                     ret = format!("({to_assign} = {functor}({to_assign}, {argument}))", 
                         to_assign = to_assign.join().unwrap()?,
-                        argument = argument.join().unwrap()?,
+                        argument = argument,
                         functor = &elem[..elem.len()-1]);
                 }
             }
@@ -198,12 +196,10 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
                 operator = String::from(&units[cnt]);
             }
             
-            let (left_s, right_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
-            let (left, right) = (
-                std::thread::spawn(move || value_parse(&left_s, 1)),
-                std::thread::spawn(move || value_parse(&right_s, 1)));
+            let left_s = String::from(&list[..cnt].to_vec().join(" "));
+            let left = std::thread::spawn(move || value_parse(&left_s, 1));
 
-            ret = format!("({} {operator} {})", left.join().unwrap()?, right.join().unwrap()?, operator = operator);
+            ret = format!("({} {operator} {})", left.join().unwrap()?, &value_parse(&list[cnt+1..].to_vec().join(" "), level)?, operator = operator);
             Ok(())
         })?;
     }
@@ -224,15 +220,13 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         }
         else {
             left_operator(&mut do_pass, (units, list, r"^[a-zA-Z_][a-zA-Z_0-9\-]*!$"), &mut |cnt: usize| {
-                let (left_s, right_s) = (String::from(&list[..cnt].to_vec().join(" ")), String::from(&list[cnt+1..].to_vec().join(" ")));
-                let (left, right) = (
-                    std::thread::spawn(move || value_parse(&left_s, 1)),
-                    std::thread::spawn(move || value_parse(&right_s, 1)));
+                let left_s = list[..cnt].to_vec().join(" ");
+                let left = std::thread::spawn(move || value_parse(&left_s, 1));
 
                 ret = format!("({}({}, {}))",
                     &verb_parse(&String::from(&units[cnt][..&units[cnt].len() - 1])),
                     left.join().unwrap()?,
-                    right.join().unwrap()?
+                    &value_parse(&list[cnt+1..].to_vec().join(" "), 1)?
                 );
                 Ok(())
             })?;

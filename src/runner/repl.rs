@@ -32,15 +32,15 @@ pub fn repl() {
                 '"' => { if !escaped { in_string = !in_string; } escaped=false; },
                 '(' => if !in_string { stack.push('(') },
                 ')' => if !in_string {
-                    if stack.is_empty() { eprintln!("괄호쌍 안맞는다 이기야..."); continue; }
+                    if stack.is_empty() { eprintln!("bracker pair does not matches"); continue; }
                     else if *stack.last().unwrap() == '(' { stack.pop(); }
-                    else { eprintln!("괄호쌍 안맞는다 이기야..."); continue; }
+                    else { eprintln!("bracker pair does not matches"); continue; }
                 },
                 '{' => if !in_string { stack.push('{') },
                 '}' => if !in_string {
-                    if stack.is_empty() { eprintln!("괄호쌍 안맞는다 이기야..."); continue; }
+                    if stack.is_empty() { eprintln!("bracker pair does not matches"); continue; }
                     else if *stack.last().unwrap() == '{' { stack.pop(); }
-                    else { eprintln!("괄호쌍 안맞는다 이기야..."); continue; }
+                    else { eprintln!("bracker pair does not matches"); continue; }
                 },
                 _ => { escaped=false; }
             };
