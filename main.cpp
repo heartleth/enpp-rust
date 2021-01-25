@@ -1,3 +1,6 @@
 #include "engppstd.hpp"
-int main(){auto  s = input_line();
-;(filter(s, (([&](auto  e){return(((e == "("[0]) | (e == ")"[0])));}))));(map(ret, (([&](auto  e){return((((e == "("[0])) ? (1) : (-1)));}))));(integrate(ret, (([&](auto  a, auto  b){return(((a + b)));}))));(fold(ret, (([&](auto  a, auto  b){return((((a > b)) ? (a) : (b)));}))));}
+template<class  T>
+T  my_add(T  a, T  b)  {return ((a + b));
+}int main(){println((my_add(1, 2)));println((my_add(3.1, 4.1)));string  a = "hello";
+;string  b = "world";
+;println((my_add(a, b)));}

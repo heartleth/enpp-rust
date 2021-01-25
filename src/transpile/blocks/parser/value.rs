@@ -233,6 +233,19 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
         }
     }
     else if level == 11 {
+        if regi(&units[1], "^(to|of|with|about|for|:|->)$") {
+            do_pass = false;
+            let func_name = &verb_parse(&units[0]);
+            let to_be_evaluated = &value_parse(&list[2..].to_vec().join(" "), 0)?;
+            if is_bracket(&to_be_evaluated, ('(', ')'))? {
+                ret = format!("{}{}", func_name, to_be_evaluated);
+            }
+            else {
+                ret = format!("{}({})", func_name, to_be_evaluated);
+            }
+        }
+    }
+    else if level == 12 {
         if regi(&units[0], r"^[a-zA-Z_][a-zA-Z_0-9\-]*:$") {
             do_pass = false;
             let func_name = &verb_parse(&String::from(&units[0][..&units[0].len()-1]));
@@ -242,11 +255,10 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             }
             else {
                 ret = format!("{}({})", func_name, to_be_evaluated);
-
             }
         }
     }
-    else if level == 12 {
+    else if level == 13 {
         left_operator(&mut do_pass, (units, list, r"^(was|were|do)$"), &mut |cnt :usize| {
             if regi(&units[cnt], "^(do)$") {
                 ret = format!("{1}.{0}", parse_sentence(&format!("it {}", &units[cnt + 1..].to_vec().join(" ")))?, &value_parse(&list[0..cnt].to_vec().join(" "), 1)?);
@@ -270,19 +282,19 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             Ok(())
         })?;
     }
-    else if level == 13 {
+    else if level == 14 {
         if regi(&units[units.len()-2], r"^(in)$") {
             do_pass = false;
             ret = format!("{}::{}", &units[units.len()-1], &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?);
         }
     }
-    else if level == 14 {
+    else if level == 15 {
         if regi(&units[units.len()-2], r"^(having)$") {
             do_pass = false;
             ret = format!("{}.{}", &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?, &units[units.len()-1]);
         }
     }
-    else if level == 15 {
+    else if level == 16 {
         if regi(&units[0], r"^(value|addr(ess)?|pointer|ptr)$") {
             do_pass = false;
             if regi(&units[0], r"^(value)$") {
@@ -293,7 +305,7 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             }
         }
     }
-    else if level > 15 {
+    else if level > 16 {
         if is_string(&s) {
             return Ok(format!("{}", s));
         }

@@ -26,7 +26,7 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
         let code_splited = split(&code);
         let keyword = keyword(&code);
         
-        let parsed = &{
+        let parsed = &(||{
             if regi(&keyword, "^(unless|if|else)$") {
                 blocks::parse_if(&tree, &mut iter, pivot)
             }
@@ -72,16 +72,16 @@ pub fn transpile(tree :&Mem, pivot :usize)->String {
             else if regi(&keyword, "^about$") {
                 blocks::parse_about(&code)
             }
-            else if first_phrase(&code_splited, true, false).unwrap() == code_splited.len() - 1 {
-                Ok(value_parse(&code, 1).unwrap() + ";")
+            else if first_phrase(&code_splited, true, false)? == code_splited.len() - 1 {
+                Ok(value_parse(&code, 1)? + ";")
             }
-            else if first_clause(&code_splited).unwrap() == code_splited.len() - 1 {
-                Ok(parse_sentence(&code).unwrap() + ";")
+            else if first_clause(&code_splited)? == code_splited.len() - 1 {
+                Ok(parse_sentence(&code)? + ";")
             }
             else {
                 Err("Invalid sentence")
             }
-        };
+        })();
         if let Ok(e) = parsed {
             ret = format!("{}{}", ret, e);
         }

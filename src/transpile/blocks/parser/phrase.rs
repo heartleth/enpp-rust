@@ -84,6 +84,10 @@ pub fn first_phrase(s :&Vec<String>, _is_first :bool, allow_multi :bool)->Result
                 ret += first_phrase(&s[2..].to_vec(), false, false)?;
             }
         }
+        else if regi(&s[1], "^(to|of|with|about|for|:|->)$") {
+            ret = 2;
+            ret += first_phrase(&s[2..].to_vec(), false, true)?;
+        }
         else if regi(&first_low, r"^([a-zA-Z_][a-zA-Z_0-9\-]*:|await|async)$") {
             ret = 1;
             ret += first_phrase(&s[1..].to_vec(), false, true)?;

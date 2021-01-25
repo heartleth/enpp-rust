@@ -1,12 +1,12 @@
-library standard
+lib std
 
+about class T
+When it my_add T a, T b return T
+    return a + b
+    
 When it starts
-    Let s as input_line:()
-
-    s filter! (|e| e is "("[0] or e is ")"[0])
-
-    ret map! (|e| if e is "("[0] then 1 else -1)
-
-    ret integrate! (|a, b|(a + b))
-
-    ret fold! (|a, b| if a > b then a else b)
+    println: (1 my_add! 2)
+    println: (3.1 my_add! 4.1)
+    Let string a as "hello"
+    Let string b as "world"
+    println: (a my_add! b)
