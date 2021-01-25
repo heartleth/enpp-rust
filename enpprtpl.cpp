@@ -1,3 +1,2 @@
 #include "engppstd.hpp"
-int main(){auto  sum = ([&](auto  e){return((fold(e, ([&](auto  a, auto  b){return(((a + b)));}))));});
-;println(sum(vec(1, 3, 5, 7)));}
+int main(){println(sum(vec(2, 0, 0, 9, 0, 5, 2, 3)));}

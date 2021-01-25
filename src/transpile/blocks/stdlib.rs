@@ -5,6 +5,7 @@ pub static STDLIB :&[u8] = b"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <numeric>
 #include <vector>
 #include <string>
 #include <thread>
@@ -25,7 +26,7 @@ typedef float f4; typedef double f8; typedef long double ld;
 typedef const char ci1; typedef const unsigned char cu1; typedef const short ci2; typedef const long ci4; typedef const long long ci8;
 typedef const unsigned short cu2; typedef const unsigned long cu4; typedef const unsigned long long cu8;
 typedef const float cf4; typedef const double cf8; typedef const long double cld;
-using std::vector; using std::string; using std::stoi; using namespace std::string_literals; using namespace std::chrono_literals;using std::async;
+using std::vector; using std::string; using std::stoi; using namespace std::string_literals; using namespace std::chrono_literals;using std::async;using std::move;
 template<class F, class...T>void get_time(F f, T...a) {
 auto st = std::chrono::system_clock::now(); f(a...); std::chrono::duration<double>t = std::chrono::system_clock::now() - st; std::cout << t.count() << \" second(s) spent.\" << std::endl;}
 std::string input_line(std::string a = \"\") { std::string b; std::cout << a; getline(std::cin, b); return b; }
@@ -48,6 +49,9 @@ for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); ret.push_back(rdc); }retu
 template<typename T, typename F, typename vt = typename T::value_type>auto fold(const T & c, const F & f)->decltype(f(*c.begin(), *c.begin())) { auto iter = c.begin(); vt rdc = *iter; iter++; std::vector<vt>ret; for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); }return rdc; }
 template<typename T, typename F, typename vt>auto bfold(const vt & d, const T & c, const F & f)->decltype(f(vt(), *c.begin())) { auto iter = c.begin(); vt rdc = d; std::vector<vt>ret; for (; iter != c.end(); iter++) { rdc = f(rdc, *iter); }return rdc; }
 template<class T1, class T2>std::vector<typename T1::value_type> cat(T1 a, T2 b) { std::vector<typename T1::value_type> ret(a.begin(), a.end()); ret.insert(ret.end(), b.begin(), b.end()); return ret; }
+template<class T, class F = std::less<typename T::value_type>>typename T::iterator max(T&& e, F f = F()) {auto first = e.begin();auto last = e.end();if (first == last) return last;typename T::iterator largest = first;++first;
+for (; first != last; ++first) {if (f(*largest, *first)) {largest = first;}}return largest;}
+template<class T>typename T::value_type sum(T&& c) {return std::accumulate(c.begin(), c.end(), typename T::value_type());}
 template<class T>T wait(T s) { std::this_thread::sleep_for(s); return s; }
 class range {private:int start; int End; int diff; public:typedef int value_type;typedef const int& const_reference;typedef int&reference;
 range(int _end) { start = 0; End = _end; diff = 1; }
@@ -64,8 +68,8 @@ inline range until(i4 a, i4 b) { return range(a, b); }
 #ifdef __cpp_lib_ranges
 namespace srv = std::ranges::views;
 namespace sr = std::ranges;
-using namespace srv;
-using namespace sr;
+//using namespace srv;
+//using namespace sr;
 #endif
 #endif
 ";

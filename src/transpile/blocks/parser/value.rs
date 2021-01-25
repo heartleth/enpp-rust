@@ -237,7 +237,13 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             do_pass = false;
             let func_name = &verb_parse(&units[0]);
             let to_be_evaluated = &value_parse(&list[2..].to_vec().join(" "), 0)?;
-            if is_bracket(&to_be_evaluated, ('(', ')'))? {
+            if regi(&units[0], r"^(value)$") {
+                ret = format!("(*{})", &value_parse(&list[2..].to_vec().join(" "), 1)?);
+            }
+            else if regi(&units[0], "^(addr(ess)?|pointer|ptr)$") {
+                ret = format!("(&{})", &value_parse(&list[2..].to_vec().join(" "), 1)?);
+            }
+            else if is_bracket(&to_be_evaluated, ('(', ')'))? {
                 ret = format!("{}{}", func_name, to_be_evaluated);
             }
             else {
@@ -294,18 +300,7 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             ret = format!("{}.{}", &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?, &units[units.len()-1]);
         }
     }
-    else if level == 16 {
-        if regi(&units[0], r"^(value|addr(ess)?|pointer|ptr)$") {
-            do_pass = false;
-            if regi(&units[0], r"^(value)$") {
-                ret = format!("(*{})", &value_parse(&list[2..units.len()-2].to_vec().join(" "), 1)?);
-            }
-            else {
-                ret = format!("(&{})", &value_parse(&list[2..units.len()-2].to_vec().join(" "), 1)?);
-            }
-        }
-    }
-    else if level > 16 {
+    else if level > 15 {
         if is_string(&s) {
             return Ok(format!("{}", s));
         }
