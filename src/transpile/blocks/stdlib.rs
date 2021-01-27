@@ -19,6 +19,24 @@ pub static STDLIB :&[u8] = b"
 #endif
 #define jthread(t) std::thread((t)).join()
 #define dthread(t) std::thread((t)).detach()
+struct __instead_of_void { friend std::ostream& operator<<(std::ostream& os, __instead_of_void _) { return os << \"void\"; }};
+template<class T> struct __gt { using t = T; };
+template<> struct __gt<void> { using t = __instead_of_void; };
+template<class T> using __gt_t=typename __gt<T>::t;
+#define __into_f(e) ([](){return e;})
+#define __vi(e) __vr1(__into_f(e))
+template<class T, class...R> struct __each_eval {
+using __a = std::tuple<__gt_t<std::invoke_result_t<T>>>;
+using t = decltype(std::tuple_cat(__a(), typename __each_eval<R...>::t()));};
+template<class T> struct __each_eval<T> {using t = typename std::tuple<__gt_t<std::invoke_result_t<T>>>;};
+template<class T>void _print(T e) {std::cout << e;}
+template<class T, class...R> auto __over_tuple(const T&e, const R&...rs)->decltype(std::tuple_cat(std::tuple<__gt_t<decltype(e())>>(), __over_tuple<R...>(rs...))) {__gt_t<decltype(e())> c;if
+constexpr (std::is_same<decltype(e()), void>::value)c=__instead_of_void();else c=e();return std::tuple_cat(std::tuple<__gt_t<decltype(e())>>(c), __over_tuple<R...>(rs...));}
+template<class T> auto __over_tuple(const T& e)->std::tuple<__gt_t<decltype(e())>> {__gt_t<decltype(e())> c;if
+constexpr (std::is_same<decltype(e()), void>::value) c = __instead_of_void();else c = e();return std::tuple<__gt_t<decltype(e())>>(c);}
+template<class F, class...Arg>inline constexpr auto __void_wrapper(const F&f, const Arg&...arg){if
+constexpr (std::is_same<decltype(std::apply(f, __over_tuple(arg...))), void>::value) {std::apply(f, __over_tuple(arg...));return __instead_of_void();}else return std::apply(f, __over_tuple(arg...));}
+template<class F>inline constexpr auto __vr1(const F& e) { if constexpr (std::is_same<decltype(e()), void>::value) return __instead_of_void(); else return e(); }
 struct __constructor{__constructor(){std::cout<<std::boolalpha;}}__Construct;
 typedef char i1; typedef short i2; typedef long i4; typedef long long i8;
 typedef unsigned char u1; typedef unsigned short u2; typedef unsigned long u4; typedef unsigned long long u8;
@@ -36,7 +54,7 @@ std::string static_input_line(int etag, std::string a = \"\") { static std::map<
 template<class...T>auto tup(T...arg)->std::tuple<T...> { return std::tuple<T...>(arg...); }
 template<class T>class __folder {
 public:T c; template<class E>__folder& operator<< (E a) { c.push_back(a); return*this; }};
-template<class...T>void print(const T&...arg) { (std::cout << ... << arg); }
+template<class...T>void print(const T&...arg) { /*(std::cout << ... << arg);*/ (([&](auto e){_print(arg);})(), ...); }
 template<class...T>void println(const T&...arg) { (std::cout << ... << arg); std::cout << std::endl; }
 template<class T, class...R>class __gft { public:typedef T CORE; };
 template<class...T>std::vector<typename __gft<T...>::CORE> vec(T...arg) { __folder<std::vector<typename __gft<T...>::CORE>> r; return (r << ... << arg).c; }
