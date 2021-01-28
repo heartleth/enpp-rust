@@ -23,21 +23,29 @@ struct __instead_of_void { friend std::ostream& operator<<(std::ostream& os, __i
 template<class T> struct __gt { using t = T; };
 template<> struct __gt<void> { using t = __instead_of_void; };
 template<class T> using __gt_t=typename __gt<T>::t;
-#define __into_f(e) ([](){return e;})
-#define __vi(e) __vr1(__into_f(e))
+#define __into_f(e) ([&](){return e;})
+#define safe(e) __vr1(__into_f(e))
+#define print_safe(e) __pr1(__into_f(e))
 template<class T, class...R> struct __each_eval {
 using __a = std::tuple<__gt_t<std::invoke_result_t<T>>>;
 using t = decltype(std::tuple_cat(__a(), typename __each_eval<R...>::t()));};
 template<class T> struct __each_eval<T> {using t = typename std::tuple<__gt_t<std::invoke_result_t<T>>>;};
-template<class T>void _print(T e) {std::cout << e;}
+template<class T>void _print(T e) {std::cout << print_safe(e);}
 template<class T, class...R> auto __over_tuple(const T&e, const R&...rs)->decltype(std::tuple_cat(std::tuple<__gt_t<decltype(e())>>(), __over_tuple<R...>(rs...))) {__gt_t<decltype(e())> c;if
 constexpr (std::is_same<decltype(e()), void>::value)c=__instead_of_void();else c=e();return std::tuple_cat(std::tuple<__gt_t<decltype(e())>>(c), __over_tuple<R...>(rs...));}
 template<class T> auto __over_tuple(const T& e)->std::tuple<__gt_t<decltype(e())>> {__gt_t<decltype(e())> c;if
 constexpr (std::is_same<decltype(e()), void>::value) c = __instead_of_void();else c = e();return std::tuple<__gt_t<decltype(e())>>(c);}
 template<class F, class...Arg>inline constexpr auto __void_wrapper(const F&f, const Arg&...arg){if
 constexpr (std::is_same<decltype(std::apply(f, __over_tuple(arg...))), void>::value) {std::apply(f, __over_tuple(arg...));return __instead_of_void();}else return std::apply(f, __over_tuple(arg...));}
-template<class F>inline constexpr auto __vr1(const F& e) { if constexpr (std::is_same<decltype(e()), void>::value) return __instead_of_void(); else return e(); }
-struct __constructor{__constructor(){std::cout<<std::boolalpha;}}__Construct;
+template<class F>inline constexpr auto __vr1(const F& e) { if constexpr (std::is_same<decltype(e()), void>::value){e(); return __instead_of_void();} else return e(); }
+template <class T>struct __lv {template <class U>constexpr static auto less_than_test(const U u) -> decltype(std::cout << u, char(0)){return 0;}constexpr static int less_than_test(...) {return 0;}
+constexpr static const bool value = (sizeof(less_than_test(std::declval<T>())) == 1);};
+template <class T>std::string __pa(T& e) { std::ostringstream oss; oss << &e; return oss.str(); }
+template <class T>std::string __pa(T&& e) { return \"rvalue\"; }
+template<class F>inline constexpr auto __pr1(const F& e) {if
+constexpr (std::is_same<decltype(e()), void>::value) { e(); return __instead_of_void(); }else if constexpr (!__lv<decltype(e())>::value) {auto&&v=e();std::ostringstream oss;oss<<\"(\"<<
+typeid(e()).name() << \":\" << sizeof(decltype(e())) <<__pa(v)<<\")\";return oss.str();}else return e();}
+struct __constructor{__constructor(){std::cout.tie(0);std::ios_base::sync_with_stdio(0);std::cout<<std::boolalpha;}}__Construct;
 typedef char i1; typedef short i2; typedef long i4; typedef long long i8;
 typedef unsigned char u1; typedef unsigned short u2; typedef unsigned long u4; typedef unsigned long long u8;
 typedef float f4; typedef double f8; typedef long double ld;
@@ -54,8 +62,8 @@ std::string static_input_line(int etag, std::string a = \"\") { static std::map<
 template<class...T>auto tup(T...arg)->std::tuple<T...> { return std::tuple<T...>(arg...); }
 template<class T>class __folder {
 public:T c; template<class E>__folder& operator<< (E a) { c.push_back(a); return*this; }};
-template<class...T>void print(const T&...arg) { /*(std::cout << ... << arg);*/ (([&](auto e){_print(arg);})(), ...); }
-template<class...T>void println(const T&...arg) { (std::cout << ... << arg); std::cout << std::endl; }
+template<class...T>void print(const T&...arg) { (([&](){_print(arg);})(), ...); }
+template<class...T>void println(const T&...arg) { (([&](){_print(arg);})(), ...); std::cout << std::endl; }
 template<class T, class...R>class __gft { public:typedef T CORE; };
 template<class...T>std::vector<typename __gft<T...>::CORE> vec(T...arg) { __folder<std::vector<typename __gft<T...>::CORE>> r; return (r << ... << arg).c; }
 template<class T>std::string make_string(T a) { std::stringstream k; k << a; return k.str(); }
