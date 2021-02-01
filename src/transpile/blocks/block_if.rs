@@ -55,8 +55,15 @@ pub fn parse_import(s :&Mem, pivot :usize)->Result<String, &str> {
     let mut ret = String::new();
     match &method.to_ascii_lowercase()[..] {
         "import" => {
-            crate::runner::filesys::convert_to_cpp(&String::from(&s[pivot].code[7..]), "hpp").expect("Failed to write file");
-            ret = format!("#include\"{}\"\n", &s[pivot].code[7..]);
+            use std::path::Path;
+            let path = &s[pivot].code[7..];
+            if Path::new(&format!("{}.epp", path)).exists() {
+                crate::runner::filesys::convert_to_cpp(&String::from(path), "hpp").expect("Failed to write file");
+                ret = format!("#include \"{}.hpp\"\n", path);
+            }
+            else {
+                ret = format!("#include \"{}.hpp\"\n", path);
+            }
         },
         "using" => {
             ret = format!("using {};\n", &s[pivot].code[6..]);

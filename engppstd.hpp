@@ -26,17 +26,7 @@ template<class T> using __gt_t=typename __gt<T>::t;
 #define __into_f(e) ([&](){return e;})
 #define safe(e) __vr1(__into_f(e))
 #define print_safe(e) __pr1(__into_f(e))
-template<class T, class...R> struct __each_eval {
-using __a = std::tuple<__gt_t<std::invoke_result_t<T>>>;
-using t = decltype(std::tuple_cat(__a(), typename __each_eval<R...>::t()));};
-template<class T> struct __each_eval<T> {using t = typename std::tuple<__gt_t<std::invoke_result_t<T>>>;};
 template<class T>void _print(T e) {std::cout << print_safe(e);}
-template<class T, class...R> auto __over_tuple(const T&e, const R&...rs)->decltype(std::tuple_cat(std::tuple<__gt_t<decltype(e())>>(), __over_tuple<R...>(rs...))) {__gt_t<decltype(e())> c;if
-constexpr (std::is_same<decltype(e()), void>::value)c=__instead_of_void();else c=e();return std::tuple_cat(std::tuple<__gt_t<decltype(e())>>(c), __over_tuple<R...>(rs...));}
-template<class T> auto __over_tuple(const T& e)->std::tuple<__gt_t<decltype(e())>> {__gt_t<decltype(e())> c;if
-constexpr (std::is_same<decltype(e()), void>::value) c = __instead_of_void();else c = e();return std::tuple<__gt_t<decltype(e())>>(c);}
-template<class F, class...Arg>inline constexpr auto __void_wrapper(const F&f, const Arg&...arg){if
-constexpr (std::is_same<decltype(std::apply(f, __over_tuple(arg...))), void>::value) {std::apply(f, __over_tuple(arg...));return __instead_of_void();}else return std::apply(f, __over_tuple(arg...));}
 template<class F>inline constexpr auto __vr1(const F& e) { if constexpr (std::is_same<decltype(e()), void>::value){e(); return __instead_of_void();} else return e(); }
 template <class T>struct __lv {template <class U>constexpr static auto less_than_test(const U u) -> decltype(std::cout << u, char(0)){return 0;}constexpr static int less_than_test(...) {return 0;}
 constexpr static const bool value = (sizeof(less_than_test(std::declval<T>())) == 1);};
