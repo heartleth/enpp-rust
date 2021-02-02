@@ -1,5 +1,7 @@
-*/**/*.cpp
-*/**/*.bat
-*/**/*.exe
-*/**/*.epp
+*.cpp
+*.bat
+*.exe
+*.epp
 /target
+/.idea
+/.vscode
