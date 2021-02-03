@@ -80,6 +80,7 @@ int operator==(iterator i) { return (i._val == _val); }
 int operator!=(iterator i) { return (i._val >= _val + _diff); }};
 inline auto begin()->iterator { return iterator(start, diff); }
 inline auto end()->iterator { return iterator(End + diff, diff); }};
+std::pair<std::string, std::string> pr(const std::string& a, const std::string& b) {return std::pair<std::string, std::string>(a, b);}
 inline range until(i4 a, i4 b) { return range(a, b); }
 #ifdef __cpp_lib_ranges
 namespace srv = std::ranges::views;
