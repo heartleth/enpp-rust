@@ -341,7 +341,13 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
             ret = format!("{}.{}", &value_parse(&list[0..units.len()-2].to_vec().join(" "), 1)?, &units[units.len()-1]);
         }
     }
-    else if level > 16 {
+    else if level == 17 {
+        left_operator(&mut do_pass, (units, list, "^#$"), &mut |cnt :usize| {
+            ret = format!("{}[{}]", &value_parse(&list[..cnt].to_vec().join(" "), level)?, &value_parse(&list[cnt+1..].to_vec().join(" "), level)?);
+            Ok(())
+        })?;
+    }
+    else if level > 17 {
         if is_string(&s) {
             return Ok(format!("{}", s));
         }

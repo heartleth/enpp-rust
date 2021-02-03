@@ -7,9 +7,9 @@ pub fn first_phrase(s :&Vec<String>, _is_first :bool, allow_multi :bool)->Result
     //     println!("{}", s.join(" "));
     // }
     let operators = if allow_multi {
-        r"^(,|and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|was|were|do|in)$"
+        r"^(,|[#:]|and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|was|were|do|in)$"
     } else {
-        r"^(and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|was|were|do|in)$"
+        r"^([#:]|and|(or)?or|plus|minus|=|is(not)?|as|[+\-*/%]|<<|>>|&|[><]|[a-zA-Z_][a-zA-Z0-9\-_]*[=!]|having|was|were|do|in)$"
     };
     
     let mut ret = 0;
