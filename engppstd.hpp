@@ -52,7 +52,7 @@ std::string static_input_line(int etag, std::string a = "") { static std::map<in
 template<class...T>auto tup(T...arg)->std::tuple<T...> { return std::tuple<T...>(arg...); }
 template<class T>class __folder {
 public:T c; template<class E>__folder& operator<< (E a) { c.push_back(a); return*this; }};
-template<class...T>void print(const T&...arg) { (([&](){_print(arg);})(), ...); }
+template<class...T>void print(const T&...arg) { (_print(arg), ...); }
 template<class...T>void println(const T&...arg) { (([&](){_print(arg);})(), ...); std::cout << std::endl; }
 template<class T, class...R>class __gft { public:typedef T CORE; };
 template<class...T>std::vector<typename __gft<T...>::CORE> vec(T...arg) { __folder<std::vector<typename __gft<T...>::CORE>> r; return (r << ... << arg).c; }
