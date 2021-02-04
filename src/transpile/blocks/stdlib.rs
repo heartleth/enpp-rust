@@ -52,8 +52,9 @@ std::string static_input_line(int etag, std::string a = \"\") { static std::map<
 template<class...T>auto tup(T...arg)->std::tuple<T...> { return std::tuple<T...>(arg...); }
 template<class T>class __folder {
 public:T c; template<class E>__folder& operator<< (E a) { c.push_back(a); return*this; }};
-template<class...T>void print(const T&...arg) { (_print(arg), ...); }
-template<class...T>void println(const T&...arg) { (_print(arg), ...); std::cout << std::endl; }
+class __fold_printer {public:template<class E>__fold_printer& operator<< (const E&a) { _print(a);return*this; }};
+template<class...T>void print(const T&...arg) { __fold_printer e;(e<< ... <<arg); }
+template<class...T>void println(const T&...arg) { __fold_printer e;(e<< ... <<arg); std::cout << std::endl; }
 template<class T, class...R>class __gft { public:typedef T CORE; };
 template<class...T>std::vector<typename __gft<T...>::CORE> vec(T...arg) { __folder<std::vector<typename __gft<T...>::CORE>> r; return (r << ... << arg).c; }
 template<class T>std::string make_string(T a) { std::stringstream k; k << a; return k.str(); }
