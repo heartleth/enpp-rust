@@ -145,6 +145,9 @@ pub fn value_parse(s :&String, level :usize)->Result<String, &'static str> {
     else if level == 3 {
         if regi(&units[0].to_ascii_lowercase(), "^if$") {
             do_pass = false;
+            // if a is b then a else b
+            // 1 .. 4
+            // 5 .. 6
             let first = 1 + first_phrase(&list[1..].to_vec(), true, false)?;
             let second = first + 2 + first_phrase(&list[first+2..].to_vec(), true, false)?;
             ret = format!("(({}) ? ({}) : ({}))",

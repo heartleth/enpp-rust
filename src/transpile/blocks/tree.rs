@@ -164,6 +164,7 @@ impl CodeTree {
                     before_indents = indents;
                 }
                 else {
+                    mem.last_mut().unwrap().code += " ";
                     mem.last_mut().unwrap().code += &filter::filter(elem.trim())[..];
                     count_brackets(&elem.trim(), &mut brackets);
                 }
