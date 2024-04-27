@@ -19,15 +19,15 @@ pub fn left_operator<T>(
                 '"' => { if !escaped { in_string = !in_string; } escaped=false; },
                 '(' => if !in_string { stack.push('(') },
                 ')' => if !in_string {
-                    if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
+                    if stack.is_empty() { return Err("mismatched parentheses"); }
                     else if *stack.last().unwrap() == '(' { stack.pop(); }
-                    else { return Err("괄호쌍 안맞는다 이기야..."); }
+                    else { return Err("mismatched parentheses"); }
                 },
                 '{' => if !in_string { stack.push('{') },
                 '}' => if !in_string {
-                    if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
+                    if stack.is_empty() { return Err("mismatched parentheses"); }
                     else if *stack.last().unwrap() == '{' { stack.pop(); }
-                    else { return Err("괄호쌍 안맞는다 이기야..."); }
+                    else { return Err("mismatched parentheses"); }
                 },
                 _ => { escaped=false; }
             };
