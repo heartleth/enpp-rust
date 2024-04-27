@@ -39,15 +39,15 @@ pub fn is_bracket(s :&String, (start, end) :(char, char))->Result<bool, &'static
             '"' => { if !escaped { in_string = !in_string; } escaped=false; },
             '(' => if !in_string { stack.push('(') },
             ')' => if !in_string {
-                if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
+                if stack.is_empty() { return Err("mismatched parentheses"); }
                 else if *stack.last().unwrap() == '(' { stack.pop(); }
-                else { return Err("괄호쌍 안맞는다 이기야..."); }
+                else { return Err("mismatched parentheses"); }
             },
             '{' => if !in_string { stack.push('{') },
             '}' => if !in_string {
-                if stack.is_empty() { return Err("괄호쌍 안맞는다 이기야..."); }
+                if stack.is_empty() { return Err("mismatched parentheses"); }
                 else if *stack.last().unwrap() == '{' { stack.pop(); }
-                else { return Err("괄호쌍 안맞는다 이기야..."); }
+                else { return Err("mismatched parentheses"); }
             },
             _ => { escaped=false; if stack.is_empty() {return Ok(false)} }
         };
@@ -86,7 +86,7 @@ pub fn existing_keys(s: &Vec<String>)->Result<Vec<String>, &'static str> {
                 '(' | '{' => if !in_string {stack.push(has_bracket = true)},
                 ')' | '}' => if !in_string {
                     if stack.is_empty() {
-                        return Err("괄호쌍 안맞는다 이기야...");
+                        return Err("mismatched parentheses");
                     }
                     stack.pop();
                     has_bracket = true;
