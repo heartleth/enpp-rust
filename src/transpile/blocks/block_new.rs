@@ -69,7 +69,7 @@ pub fn parse_new(s :&String)->Result<String, &str> {
             )
         },
         RefType => match make_type {
-            Have => return Err("우흥~ 하고 울어요. 우흥~ 하고 우는데..."),
+            Have => return Err("TODO error"),
             Let => format!("{}&{} = {};\n", var.typename, var.name, &value_parse(&splited[where_as+1..].to_vec().join(" "), 1)?),
             Make => format!(
                 "{type} {name} = {to_copy};\n",
