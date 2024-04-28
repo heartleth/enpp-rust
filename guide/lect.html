@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>En++ Official document</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @font-face {
+            font-family: 'NEXON Lv2 Gothic Bold';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic Bold.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'IBMPlexSansKR-Regular';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+        * {
+            font-family: 'IBMPlexSansKR-Regular', 'Courier New', Courier, monospace;
+        }
+
+        .main {
+            margin: 0px auto;
+            max-width: fit-content;
+        }
+
+        .main>img {
+            margin: 0px auto;
+        }
+
+        body {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .shad {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: inset 0px 0px 16px rgba(0, 0, 0, 0.007), 0px 7px 16px rgba(0, 0, 0, 0.116);
+            padding: 20px;
+        }
+
+        .mainboard {
+            max-width: 1380px;
+            margin: 0px auto;
+            /*margin-top: 20px;*/
+        }
+
+        .codeboard {
+            height: 900px;
+        }
+
+        .codeboard>div:first-child {
+            display: flex;
+        }
+
+        .codeboard>div>* {
+            flex: 1 0 auto;
+        }
+
+        .codeboard>*:first-child>*:first-child,
+        .codeboard>*:first-child>*:last-child {
+            text-align: center;
+            padding: 20px;
+            width: 33%;
+            font-size: 30px;
+        }
+
+        .codeboard>*>span {
+            padding: 0px;
+            font-size: 40px;
+            font-weight: lighter;
+            text-align: center;
+        }
+
+        .code {
+            border-radius: 16px;
+            background-color: rgb(41, 41, 41);
+            color: white;
+            font-family: consolas;
+            padding: 20px;
+            width: 33%;
+            height: fit-content;
+        }
+
+        .ccode {
+            border-radius: 16px;
+            background-color: rgb(41, 41, 41);
+            color: white;
+            font-family: consolas;
+            padding: 20px;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        .scode {
+            border-radius: 16px;
+            background-color: rgb(41, 41, 41);
+            color: white;
+            font-family: consolas;
+            padding: 8px;
+            display: inline;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        p {
+            line-height: 210%;
+        }
+
+        .before-trans {
+            width: 1000px;
+            margin-left: 100px;
+            opacity: 0%;
+            transition-timing-function: ease-out;
+            transition-duration: 1s;
+        }
+
+        .after-trans {
+            margin-left: 0px;
+            transition-timing-function: ease-out;
+            transition-duration: 1s;
+            opacity: 100%;
+            display: flex;
+        }
+
+        a,
+        a:visited {
+            color: royalblue;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        #official {
+            display: flex;
+        }
+
+        #official>* {
+            margin: auto 0;
+        }
+
+        .goods {
+            max-width: 1380px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .good {
+            flex: 1 0 3px;
+            margin: 20px;
+        }
+
+        .downloadbox {
+            overflow: hidden;
+            padding: 0px;
+            width: 1332px;
+            height: calc(1194px - 850px);
+            transition-timing-function: ease-out;
+            transition-duration: 500ms;
+        }
+
+        .opened-repl {
+            transition-timing-function: ease-out;
+            transition-duration: 500ms;
+            height: 1194px;
+        }
+
+        .downloadbox>* {
+            margin: 20px;
+        }
+
+        .downloadbox>*:nth-child(2) {
+            margin: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .downloadbox>*:nth-child(2)>* {
+            flex: 1 0;
+            margin: 10px;
+        }
+
+        .nav {
+            width: 100%;
+            height: 60px;
+            box-shadow: inset 0px 0px 16px rgba(0, 0, 0, 0.007), 0px 7px 16px rgba(0, 0, 0, 0.116);
+            background-color: white;
+        }
+
+        .nop {
+            padding: 0px;
+            width: 100%;
+        }
+
+        .limage {
+            margin: 0px auto 0px auto;
+            width: 50%;
+        }
+
+        .imgwrap {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="shad mainboard nop">
+        <div class="shad mainboard">
+            <h2>Welcome to english++ offical documentation!</h2>
+            <img src="./images/l0/code.png" alt="">
+            <img src="./images/l0/enpp.jpg" alt="">
+            <h2>Hello, world!</h2>
+            <img src="./images/l1/hello.png" alt="helloworld" width="70%" style="border-radius: 10px;">
+            <p>이 english++ 코드는 Hello, world! 를 출력합니다.</p>
+            <ul>
+                <li>
+                    <p>
+                        1번째 줄 <span class="scode">library standard</span>는 <b>표준 라이브러리</b>를 사용한다는 선언입니다.
+                        표준 라이브러리에는 아래의 println 동작 등 여러가지 필수적이며, 편리한 동작, 클래스 등이 포함되어 들어 있습니다.
+                    </p>
+                </li>
+                <br>
+                <li>
+                    <p>
+                        3번째 줄 <span class="scode">When it starts</span>는 english++ 코드를 실행시키려면 필수적인 코드입니다.
+                        코드가 실행될 도입부를 정의하며, 프로그램이 시작 될 시 저 블록 안의 코드를 실행합니다. 블록은 탭 문자 또는 스페이스들로 이루어져 있으며, 스페이스가 몇 칸인지는
+                        중요하지 않습니다.
+                        하지만 맨 처음에 스페이스 4칸을 사용하였다면 계속 스페이스 4칸을 사용해야 합니다.
+                    </p>
+                </li>
+                <br>
+                <li>
+                    <p>
+                        4번째 줄 <span class="scode">it println about "Hello, world!"</span>는 화면(stdout)에 문자열을 출력한 뒤 한 줄
+                        개행하는 코드입니다. 문자열 말고도 숫자 등등 여러가지 타입이 출력 가능합니다.
+                        주어 it 이 동작 println을 행한다는 뜻입니다.
+                        <span class="scode">about</span>은 전치사이며, with, for, :, -> 이 대신 와도 괜찮습니다. 동작에 어울리는 전치사를 알맞게 쓰시면
+                        됩니다.
+                        마지막 <span class="scode">"Hello, world!"</span>는 목적어이며, 우리가 출력할 문자열입니다.
+                    </p>
+                </li>
+            </ul>
+            <h3>Method 2: 콜론(:) 표기법</h3>
+            <img src="./images/l1/colon.png" alt="helloworld" width="70%" style="border-radius: 10px;">
+            <p>주어가 it 이고 목적어가 하나인 문장은 간단하게 <span class="scode">동사: 목적어</span>로 줄일 수 있습니다. 동사와 :은 반드시 붙여 써야 합니다.</p>
+            <h3>Method 3: print</h3>
+            <img src="./images/l1/prt.png" alt="helloworld" width="70%" style="border-radius: 10px;">
+        </div>
+        <div class="shad mainboard">
+            <h2>A quick look at the grammar</h2>
+            <p>REPL will be helpful.</p>
+            <h3>operators</h3>
+            <p>English++ has various operators.</p>
+            <ul>
+                <li>
+                    <p>산술 연산자: + - * / % plus minus</p>
+                    <ul>
+                        <li>+, plus : 덧셈 연산자</li>
+                        <li>-, minus: 뺼셈 연산자</li>
+                        <li>* : 곱셈 연산자</li>
+                        <li>/ : 나눗셈 연산자</li>
+                        <li>% : 나머지 연산자</li>
+                    </ul>
+                    <p>The plus, minus, -, and % operators must be separated. It should be written as 1 - 1, not 1-1.</p>
+                    <p>You can use 1+1.</p>
+                </li>
+                <li>
+                    <p>Binary operators: or, and, <<,>>, <,>, is, is not</p>
+                    <ul>
+                        <li>or, and</li>
+                        <li>
+                            <<,>>: Shift operator
+                        </li>
+                        <li>
+                            <,>: Compare operator
+                        </li>
+                        <li>is: Equivalent to '=='.</li>
+                    </ul>
+                </li>
+                <li>
+                    <p>if then else 연산자</p>
+                    <p><span class="scode">if 1 is 1 then 2 else 3</span>의 값은 2입니다.</p>
+                    <p><span class="scode">if 1 is 2 then 2 else 3</span>의 값은 3입니다.</p>
+                    <p><span class="scode">if A then B else C</span>의 값은 A가 참이면 B이고, 거짓이면 C입니다.</p>
+                    <p><span class="scode">if A then B else if C then D else E</span>처럼 여러 조건을 걸 수도 있습니다.</p>
+                    <p>You can also change a line.
+                    <pre class="code">if A then B
+else if C then D
+else E</pre>
+                    </p>
+                </li>
+                <li>
+                    <p>'as' and function complex operator, function operator, unary function operator</p>
+                    <p><span class="scode">a as 10</span> Assign 10 for a. The value of the expression is 10.</p>
+                    <p><span class="scode">a func= 10</span> Assign f(a, 10) into a. The value of the expression is the value assigned into a.</p>
+                    <p><span class="scode">a func! 10</span> The value of the expression is f(a, 10).</p>
+                    <p><span class="scode">func: a</span> The value of the expression is f(a).</p>
+                </li>
+            </ul>
+            <p>Of course, you can concatenate operators in the format 1 + 1 + 1 + 1.</p>
+            <p>And of course, you can use parentheses in the format 1 + (1 + 1) + 1. It is recommended to use parentheses for functional compound operators and (unary) function operators.</p>
+            <h2>Condition, Repeat</h2>
+            <h2>Conditional blocks</h2>
+            <pre class="code">if 조건
+    inner code</pre>
+            <p>Case doesn't matter.</p>
+            <p>If 1 + 1 is 2, the code that prints Hello twice is:</p>
+            <pre class="code">if 1 plus 1 is 2
+            it println about "Hello"
+            it println about "Hello"</pre>
+            <h2>Repeat blocks</h2>
+            <p>There are three types of loop statements.</p>
+            <h3>For</h3>
+            <pre class="code">For 요소의타입 요소 of 순회할배열
+    inner code</pre>
+            <p>English++ supports arrays that can be simply written as [1..10]. [1..10] is an array containing numbers from 1 to 10 in order with a difference of 1. If you want an array up to 20, you can write [1..20]. If you want the difference of 2, just write [1...20] and 3 dots in the middle. Those numbers can only be constants. [a..b] is not possible.</p>
+            <p>Using that array, we can write code that prints numbers from 1 to 10. We haven't learned types yet, but let's move on.</p>
+            <pre class="code">For i of [1..10]
+    it println about i</pre>
+            <h3>Repeat</h3>
+            <pre class="code">Repeat 반복횟수
+    inner code</pre>
+            <h3>While</h3>
+            <pre class="code">While 조건
+    inner code</pre>
+
+            <h3>Class</h3>
+            <h3>Use</h3>
+            <h3>async, await</h3>
+        </div>
+    </div>
+</body>
+
+</html>
